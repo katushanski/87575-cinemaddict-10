@@ -276,10 +276,9 @@ const renderCardElements = () =>
       render(filmsListContainer, createShowMoreButtonTemplate(), `afterend`); // "show more" button rendering
     }
 
-  const mainFilmsListTitle = filmsElement.querySelector(`.films-list h2`); // hiding the title
-
-  mainFilmsListTitle.classList.add(`visually-hidden`);
-});
+    const mainFilmsListTitle = filmsElement.querySelector(`.films-list h2`); // hiding the title
+    mainFilmsListTitle.classList.add(`visually-hidden`);
+  });
 
 renderCardElements();
 
