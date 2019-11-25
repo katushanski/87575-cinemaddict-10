@@ -260,7 +260,7 @@ render(siteMainElement, createFilmSectionTemplate());
 
 const filmsElement = document.querySelector(`.films`);
 
-const renderCardElements = function () {
+const renderCardElements = () =>
   filmLists.forEach((filmList) => {
     render(filmsElement, createFilmListTemplate(filmList.title, filmList.isExtra, filmList.type));
 
@@ -275,12 +275,11 @@ const renderCardElements = function () {
     if (!filmList.isExtra) {
       render(filmsListContainer, createShowMoreButtonTemplate(), `afterend`); // "show more" button rendering
     }
-  });
 
   const mainFilmsListTitle = filmsElement.querySelector(`.films-list h2`); // hiding the title
 
   mainFilmsListTitle.classList.add(`visually-hidden`);
-};
+});
 
 renderCardElements();
 
