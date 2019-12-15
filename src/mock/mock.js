@@ -33,18 +33,7 @@ const TITLES = [
 
 const DESCRIPTION = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`;
 
-// const MAX_DESCRIPTION_LENGTH = 140;
-// Не знаю как сделать проверку длины описания: не понимаю, в какой момент ее производить,
-// плюс всё усложняет то, что описание фильма — это слитый массив из трех элементов.
-
-/* const limitString = (string, number, symbol) => {
-  if (!number && !symbol) {
-    return string;
-  } else {
-    symbol = symbol || `...`;
-    return symbol.substr(0, number - symbol.length) + symbol;
-  }
-}; */
+const MAX_DESCRIPTION_LENGTH = 140;
 
 const POSTERS = [
   `made-for-each-other.png`,
@@ -78,6 +67,16 @@ const createFilmDescription = () => {
   return getRandomDescription(sentences, getRandomNumber(1, 3, true));
 };
 
+const limitDescription = (string, number, symbol) => {
+  if (!number && !symbol) {
+    return string;
+  } else if (string.length > number) {
+    return string.substr(0, number - symbol.length) + symbol;
+  } else {
+    return string;
+  }
+};
+
 const generateFilmCard = (titles, index) => {
   const today = new Date();
   const year = getRandomNumber(1980, today.getFullYear(), true);
@@ -87,8 +86,10 @@ const generateFilmCard = (titles, index) => {
                 .fill(``)
                 .map(() => {
                   return {
-                    message: getRandomIndex(DESCRIPTION.split(`. `)),
-                    emoji: getRandomIndex(EMOJIES) // мне нужно сюда еще добавить два свойства, которые будут содержать имя и дату?
+                    text: getRandomIndex(DESCRIPTION.split(`. `)),
+                    emoji: getRandomIndex(EMOJIES),
+                    author: `John Doe`,
+                    day: `Today`// мне нужно сюда еще добавить два свойства, которые будут содержать имя и дату?
                   };
                 });
   };
@@ -99,7 +100,7 @@ const generateFilmCard = (titles, index) => {
     year,
     duration: `${getRandomNumber(1, 3, true)}h ${getRandomNumber(0, 60, true)}m`,
     genre: getRandomIndex(GENRES),
-    description: createFilmDescription(),
+    description: limitDescription(createFilmDescription(), MAX_DESCRIPTION_LENGTH, `...`),
     commentsCount,
     comments: getComments(commentsCount),
     isInWatchlist: getRandomBoolean(),

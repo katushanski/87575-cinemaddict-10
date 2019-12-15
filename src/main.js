@@ -1,5 +1,5 @@
 import {getRandomNumber} from './util.js';
-// import {createCommentTemplate} from './components/comment.js';
+import {createCommentTemplate} from './components/comment.js';
 import {render} from './components/render.js';
 import {createCardElementTemplate} from './components/film-card.js';
 import {createFilmsContainerTemplate} from './components/films-container.js';
@@ -13,11 +13,10 @@ import {createPersonalRatingTemplate} from './components/user.js';
 
 const FILM_MAIN_COUNT = 5;
 const FILM_EXTRA_COUNT = 2;
-// const COMMENTS_COUNT = 4;
 
 // header and user markup
 const siteHeaderElement = document.querySelector(`.header`);
-render(siteHeaderElement, createPersonalRatingTemplate(getRandomNumber));
+render(siteHeaderElement, createPersonalRatingTemplate(getRandomNumber(0, 25, true)));
 
 // main and menu markup
 const siteMainElement = document.querySelector(`.main`);
@@ -97,3 +96,16 @@ const onFilmDetailsCloseButtonClick = function (evt) {
 };
 
 filmDetailsCloseButton.addEventListener(`click`, onFilmDetailsCloseButtonClick);
+
+// comments rendering
+const commentsContainer = filmDetailsElement.querySelector(`.film-details__comments-list`);
+
+const renderComments = () => {
+  const createCommentsMarkup = Array.from(popupFilmCard.comments).slice(0, popupFilmCard.commentsCount).map((comment) => {
+    return createCommentTemplate(comment);
+  }).join(`\n`);
+
+  render(commentsContainer, createCommentsMarkup);
+};
+
+renderComments();
