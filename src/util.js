@@ -10,7 +10,7 @@ const getRandomBoolean = () =>
   Math.random() < 0.5;
 
 const sortRandomArray = (array, criterion) => {
-  array.sort((a, b) => {
+  return array.sort((a, b) => {
     if (a[criterion] > b[criterion]) {
       return -1;
     }
@@ -22,4 +22,7 @@ const sortRandomArray = (array, criterion) => {
   });
 };
 
-export {getRandomNumber, getRandomIndex, getRandomBoolean, sortRandomArray};
+const getCountByProperty = (movies, property) =>
+  movies.filter((film) => film[property]).length;
+
+export {getRandomNumber, getRandomIndex, getRandomBoolean, sortRandomArray, getCountByProperty};

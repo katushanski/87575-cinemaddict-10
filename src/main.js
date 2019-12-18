@@ -1,4 +1,5 @@
-import {getRandomNumber} from './util.js';
+import {generateFilmCards} from './mock/mock.js';
+import {getRandomNumber, getCountByProperty, sortRandomArray} from './util.js';
 import {createCommentTemplate} from './components/comment.js';
 import {render} from './components/render.js';
 import {createCardElementTemplate} from './components/film-card.js';
@@ -7,13 +8,57 @@ import {createFilmsListTemplate} from './components/films-list.js';
 import {createFilmListExtraTemplate} from './components/films-list-extra.js';
 import {createFooterStatsTemplate} from './components/footer-stats.js';
 import {createShowMoreButtonTemplate} from './components/load-button.js';
-import {FILM_AMOUNT, films, allFilters, createFilterTemplate} from './components/menu-nav.js';
+import {createFilterTemplate} from './components/menu-nav.js';
 import {createSortTemplate} from './components/menu-sort.js';
 import {createFilmDetailsTemplate} from './components/popup.js';
 import {createPersonalRatingTemplate} from './components/user.js';
 
+const FILM_AMOUNT = 15;
 const FILM_MAIN_COUNT = 5;
 const FILM_EXTRA_COUNT = 2;
+
+// array that contains all movies
+const films = generateFilmCards(FILM_AMOUNT);
+
+// navigation filters
+const allFilters = [
+  {
+    title: `All movies`,
+    count: getRandomNumber(0, 20, true),
+    source: `all`,
+    isCountable: false,
+    isActive: true,
+    isAdditional: false
+  }, {
+    title: `Watchlist`,
+    count: getCountByProperty(films, `isInWatchList`),
+    source: `watchlist`,
+    isCountable: true,
+    isActive: false,
+    isAdditional: false
+  }, {
+    title: `History`,
+    count: getCountByProperty(films, `isWatched`),
+    source: `history`,
+    isCountable: true,
+    isActive: false,
+    isAdditional: false
+  }, {
+    title: `Favorites`,
+    count: getCountByProperty(films, `isFavorite`),
+    source: `favorites`,
+    isCountable: true,
+    isActive: false,
+    isAdditional: false
+  }, {
+    title: `Stats`,
+    source: null,
+    link: `stats`,
+    isCountable: false,
+    isActive: false,
+    isAdditional: true
+  }
+];
 
 // header and user markup
 const siteHeaderElement = document.querySelector(`.header`);
@@ -45,17 +90,7 @@ renderFilmCards(filmsMainList, films, FILM_MAIN_COUNT);
 const createExtraMarkup = (criterion, title) => {
   render(filmsElement, createFilmListExtraTemplate(title));
   let extraList = filmsElement.querySelector(`.films-list--extra:last-of-type`);
-  let sortedFilmCards = films.slice()
-                          .sort((a, b) => {
-                            if (a[criterion] > b[criterion]) {
-                              return -1;
-                            }
-                            if (a[criterion] < b[criterion]) {
-                              return 1;
-                            } else {
-                              return 0;
-                            }
-                          });
+  let sortedFilmCards = sortRandomArray(films.slice(), criterion);
   renderFilmCards(extraList, sortedFilmCards, FILM_EXTRA_COUNT);
 };
 
