@@ -9,4 +9,17 @@ const getRandomIndex = (array) =>
 const getRandomBoolean = () =>
   Math.random() < 0.5;
 
-export {getRandomNumber, getRandomIndex, getRandomBoolean};
+const sortRandomArray = (array, criterion) => {
+  array.sort((a, b) => {
+    if (a[criterion] > b[criterion]) {
+      return -1;
+    }
+    if (a[criterion] < b[criterion]) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+};
+
+export {getRandomNumber, getRandomIndex, getRandomBoolean, sortRandomArray};

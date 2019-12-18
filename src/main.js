@@ -5,8 +5,9 @@ import {createCardElementTemplate} from './components/film-card.js';
 import {createFilmsContainerTemplate} from './components/films-container.js';
 import {createFilmsListTemplate} from './components/films-list.js';
 import {createFilmListExtraTemplate} from './components/films-list-extra.js';
+import {createFooterStatsTemplate} from './components/footer-stats.js';
 import {createShowMoreButtonTemplate} from './components/load-button.js';
-import {films, allFilters, createFilterTemplate} from './components/menu-nav.js';
+import {FILM_AMOUNT, films, allFilters, createFilterTemplate} from './components/menu-nav.js';
 import {createSortTemplate} from './components/menu-sort.js';
 import {createFilmDetailsTemplate} from './components/popup.js';
 import {createPersonalRatingTemplate} from './components/user.js';
@@ -41,8 +42,8 @@ const renderFilmCards = (container, list, count) => {
 renderFilmCards(filmsMainList, films, FILM_MAIN_COUNT);
 
 // extra list movies rendering
-const renderFilmsListExtra = (criterion) => {
-  render(filmsElement, createFilmListExtraTemplate());
+const createExtraMarkup = (criterion, title) => {
+  render(filmsElement, createFilmListExtraTemplate(title));
   let extraList = filmsElement.querySelector(`.films-list--extra:last-of-type`);
   let sortedFilmCards = films.slice()
                           .sort((a, b) => {
@@ -58,11 +59,47 @@ const renderFilmsListExtra = (criterion) => {
   renderFilmCards(extraList, sortedFilmCards, FILM_EXTRA_COUNT);
 };
 
-renderFilmsListExtra(`rating`);
-renderFilmsListExtra(`commentsCount`);
+// cheking the neccessity of rendering extra blocks
 
-const commentedListExtra = filmsElement.querySelector(`.films-list--extra:last-of-type`);
-commentedListExtra.querySelector(`.films-list__title`).textContent = `Most commented`;
+const renderFilmsListExtra = (filmCards) => {
+  const checkTopRated = (movies) => {
+    let counter = 0;
+
+    for (const film of movies) {
+      if (film.rating > 0) {
+        counter = counter + 1;
+      }
+    }
+
+    return counter > 0;
+  };
+
+  const isTopRated = checkTopRated(filmCards);
+
+  if (isTopRated) {
+    createExtraMarkup(`rating`, `Top rated`);
+  }
+
+  const checkMostCommented = (movies) => {
+    let counter = 0;
+
+    for (const film of movies) {
+      if (film.comments.length > 0) {
+        counter = counter + 1;
+      }
+    }
+
+    return counter > 0;
+  };
+
+  const isMostCommented = checkMostCommented(filmCards);
+
+  if (isMostCommented) {
+    createExtraMarkup(`commentsCount`, `Most commented`);
+  }
+};
+
+renderFilmsListExtra(films);
 
 // "show more" button rendering
 render(filmsMainList, createShowMoreButtonTemplate());
@@ -84,28 +121,40 @@ showMoreButton.addEventListener(`click`, () => {
   }
 });
 
+// footer stats rendering
+const renderFooterStats = (amount) => {
+  const siteFooterElement = document.querySelector(`footer`);
+  render(siteFooterElement, createFooterStatsTemplate(amount));
+};
+
+renderFooterStats(FILM_AMOUNT);
+
 // popup rendering
 const popupFilmCard = films[getRandomNumber(0, films.length - 1, true)];
-render(document.body, createFilmDetailsTemplate(popupFilmCard));
+const renderPopup = (film) => {
+  render(document.body, createFilmDetailsTemplate(film));
 
-const filmDetailsElement = document.querySelector(`.film-details`);
-const filmDetailsCloseButton = filmDetailsElement.querySelector(`.film-details__close-btn`);
-const onFilmDetailsCloseButtonClick = function (evt) {
-  filmDetailsElement.classList.add(`visually-hidden`);
-  evt.target.removeEventListener(`click`, onFilmDetailsCloseButtonClick);
+  const filmDetailsElement = document.querySelector(`.film-details`);
+  const filmDetailsCloseButton = filmDetailsElement.querySelector(`.film-details__close-btn`);
+  const onFilmDetailsCloseButtonClick = function (evt) {
+    filmDetailsElement.classList.add(`visually-hidden`);
+    evt.target.removeEventListener(`click`, onFilmDetailsCloseButtonClick);
+  };
+
+  filmDetailsCloseButton.addEventListener(`click`, onFilmDetailsCloseButtonClick);
+
+  // comments rendering
+  const commentsContainer = filmDetailsElement.querySelector(`.film-details__comments-list`);
+
+  const renderComments = () => {
+    const createCommentsMarkup = Array.from(film.comments).slice(0, film.commentsCount).map((comment) => {
+      return createCommentTemplate(comment);
+    }).join(`\n`);
+
+    render(commentsContainer, createCommentsMarkup);
+  };
+
+  renderComments();
 };
 
-filmDetailsCloseButton.addEventListener(`click`, onFilmDetailsCloseButtonClick);
-
-// comments rendering
-const commentsContainer = filmDetailsElement.querySelector(`.film-details__comments-list`);
-
-const renderComments = () => {
-  const createCommentsMarkup = Array.from(popupFilmCard.comments).slice(0, popupFilmCard.commentsCount).map((comment) => {
-    return createCommentTemplate(comment);
-  }).join(`\n`);
-
-  render(commentsContainer, createCommentsMarkup);
-};
-
-renderComments();
+renderPopup(popupFilmCard);

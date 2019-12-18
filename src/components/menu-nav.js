@@ -62,4 +62,4 @@ const createFilterTemplate = (filters) => {
   </nav>`;
 };
 
-export {films, allFilters, createFilterTemplate};
+export {FILM_AMOUNT, films, allFilters, createFilterTemplate};
