@@ -1,17 +1,16 @@
 import {generateFilmCards} from './mock/mock.js';
-import {getRandomNumber, getCountByProperty, sortRandomArray} from './util.js';
-import {createCommentTemplate} from './components/comment.js';
-import {render} from './components/render.js';
-import {createCardElementTemplate} from './components/film-card.js';
-import {createFilmsContainerTemplate} from './components/films-container.js';
-import {createFilmsListTemplate} from './components/films-list.js';
-import {createFilmListExtraTemplate} from './components/films-list-extra.js';
-import {createFooterStatsTemplate} from './components/footer-stats.js';
-import {createShowMoreButtonTemplate} from './components/load-button.js';
-import {createFilterTemplate} from './components/menu-nav.js';
-import {createSortTemplate} from './components/menu-sort.js';
-import {createFilmDetailsTemplate} from './components/popup.js';
-import {createPersonalRatingTemplate} from './components/user.js';
+import {getRandomNumber, getCountByProperty, sortRandomArray, render} from './util.js';
+import CommentTemplate from './components/comment.js';
+import CardElement from './components/film-card.js';
+import FilmsContainer from './components/films-container.js';
+import FilmsList from './components/films-list.js';
+import FilmsListExtra from './components/films-list-extra.js';
+import FooterStats from './components/footer-stats.js';
+import ShowMoreButton from './components/load-button.js';
+import NavFilter from './components/menu-nav.js';
+import SortTemplate from './components/menu-sort.js';
+import FilmDetails from './components/popup.js';
+import PersonalRating from './components/user.js';
 
 const FILM_AMOUNT = 15;
 const FILM_MAIN_COUNT = 5;
@@ -62,23 +61,23 @@ const allFilters = [
 
 // header and user markup
 const siteHeaderElement = document.querySelector(`.header`);
-render(siteHeaderElement, createPersonalRatingTemplate(getRandomNumber(0, 25, true)));
+render(siteHeaderElement, new PersonalRating(getRandomNumber(0, 25, true)).getElement());
 
 // main and menu markup
 const siteMainElement = document.querySelector(`.main`);
-render(siteMainElement, createFilterTemplate(allFilters));
-render(siteMainElement, createSortTemplate());
+render(siteMainElement, new NavFilter(allFilters).getElement());
+render(siteMainElement, new SortTemplate().getElement());
 
 // main list movies rendering
-render(siteMainElement, createFilmsListTemplate());
+render(siteMainElement, new FilmsList().getElement());
 const filmsElement = siteMainElement.querySelector(`.films`);
 const filmsMainList = siteMainElement.querySelector(`.films-list`);
 
 const renderFilmCards = (container, list, count) => {
-  render(container, createFilmsContainerTemplate());
+  render(container, new FilmsContainer().getElement());
   let filmsListContainer = container.querySelector(`.films-list__container`);
   const filmsListMarkup = list.slice(0, count).map((card) => {
-    return createCardElementTemplate(card);
+    return new CardElement(card).getElement();
   }).join(`\n`);
 
   render(filmsListContainer, filmsListMarkup);
@@ -88,7 +87,7 @@ renderFilmCards(filmsMainList, films, FILM_MAIN_COUNT);
 
 // extra list movies rendering
 const createExtraMarkup = (criterion, title) => {
-  render(filmsElement, createFilmListExtraTemplate(title));
+  render(filmsElement, new FilmsListExtra(title).getElement());
   let extraList = filmsElement.querySelector(`.films-list--extra:last-of-type`);
   let sortedFilmCards = sortRandomArray(films.slice(), criterion);
   renderFilmCards(extraList, sortedFilmCards, FILM_EXTRA_COUNT);
@@ -137,7 +136,7 @@ const renderFilmsListExtra = (filmCards) => {
 renderFilmsListExtra(films);
 
 // "show more" button rendering
-render(filmsMainList, createShowMoreButtonTemplate());
+render(filmsMainList, new ShowMoreButton().getElement());
 const showMoreButton = filmsMainList.querySelector(`.films-list__show-more`);
 let showingFilmsCount = FILM_MAIN_COUNT;
 
@@ -147,7 +146,7 @@ showMoreButton.addEventListener(`click`, () => {
   const filmsListContainer = filmsMainList.querySelector(`.films-list__container`);
 
   films.slice(prevFilmsCount, showingFilmsCount)
-    .forEach((film) => render(filmsListContainer, createCardElementTemplate(film)));
+    .forEach((film) => render(filmsListContainer, new CardElement(film).getElement()));
 
   if (showingFilmsCount >= films.length) {
     showMoreButton.remove();
@@ -159,7 +158,7 @@ showMoreButton.addEventListener(`click`, () => {
 // footer stats rendering
 const renderFooterStats = (amount) => {
   const siteFooterElement = document.querySelector(`footer`);
-  render(siteFooterElement, createFooterStatsTemplate(amount));
+  render(siteFooterElement, new FooterStats(amount).getElement());
 };
 
 renderFooterStats(FILM_AMOUNT);
@@ -167,7 +166,7 @@ renderFooterStats(FILM_AMOUNT);
 // popup rendering
 const popupFilmCard = films[getRandomNumber(0, films.length - 1, true)];
 const renderPopup = (film) => {
-  render(document.body, createFilmDetailsTemplate(film));
+  render(document.body, new FilmDetails(film).getElement());
 
   const filmDetailsElement = document.querySelector(`.film-details`);
   const filmDetailsCloseButton = filmDetailsElement.querySelector(`.film-details__close-btn`);
@@ -183,7 +182,7 @@ const renderPopup = (film) => {
 
   const renderComments = () => {
     const createCommentsMarkup = Array.from(film.comments).slice(0, film.commentsCount).map((comment) => {
-      return createCommentTemplate(comment);
+      return new CommentTemplate(comment).getElement();
     }).join(`\n`);
 
     render(commentsContainer, createCommentsMarkup);

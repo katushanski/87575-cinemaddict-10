@@ -1,3 +1,5 @@
+import {createElement} from '../util.js';
+
 const createFilterMarkup = (filter) => {
   const {title, count, source, isCountable, isActive, isAdditional} = filter;
 
@@ -12,4 +14,27 @@ const createFilterTemplate = (filters) => {
   </nav>`;
 };
 
-export {createFilterTemplate};
+class NavFilter {
+  constructor(filters) {
+    this._element = null;
+    this._filters = filters;
+  }
+
+  getTemplate() {
+    return createFilterTemplate(this._filters);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export default NavFilter;
