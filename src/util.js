@@ -1,4 +1,13 @@
 /*
+crucial keys
+*/
+
+const escKeyCode = 27;
+
+const isEscEvent = (evt) =>
+  evt.keyCode === escKeyCode;
+
+/*
 random values functions
 */
 
@@ -52,8 +61,8 @@ const sortRandomArray = (list, criterion) => {
   });
 };
 
-
 export {
+  isEscEvent,
   getRandomNumber,
   getRandomIndex,
   getRandomBoolean,

@@ -1,6 +1,11 @@
 import {generateFilmCards} from './mock/mock.js';
-import {getRandomNumber, getCountByProperty, sortRandomArray, render} from './util.js';
-import CommentTemplate from './components/comment.js';
+import {
+  isEscEvent,
+  getRandomNumber,
+  getCountByProperty,
+  sortRandomArray,
+  render
+} from './util.js';
 import CardElement from './components/film-card.js';
 import FilmsContainer from './components/films-container.js';
 import FilmsList from './components/films-list.js';
@@ -9,7 +14,7 @@ import FooterStats from './components/footer-stats.js';
 import ShowMoreButton from './components/load-button.js';
 import NavFilter from './components/menu-nav.js';
 import SortTemplate from './components/menu-sort.js';
-import FilmDetails from './components/popup.js';
+import Popup from './components/popup.js';
 import PersonalRating from './components/user.js';
 
 const FILM_AMOUNT = 15;
@@ -73,14 +78,45 @@ render(siteMainElement, new FilmsList().getElement());
 const filmsElement = siteMainElement.querySelector(`.films`);
 const filmsMainList = siteMainElement.querySelector(`.films-list`);
 
+// rendering each card and corresponding popup as well as adding event listeners
 const renderFilmCards = (container, list, count) => {
   render(container, new FilmsContainer().getElement());
   let filmsListContainer = container.querySelector(`.films-list__container`);
-  const filmsListMarkup = list.slice(0, count).map((card) => {
-    return new CardElement(card).getElement();
-  }).join(`\n`);
 
-  render(filmsListContainer, filmsListMarkup);
+  list.slice(0, count).forEach((film) => {
+    const card = new CardElement(film).getElement();
+    const popup = new Popup(film).getElement();
+
+    render(filmsListContainer, card); // мне же сначала нужно отрендерить, а потом искать элементы?
+
+    const cardTitle = card.querySelector(`.film-card__title`);
+    const cardPoster = card.querySelector(`.film-card__poster`);
+    const cardComments = card.querySelector(`.film-card__comments`);
+    const popupCloseButton = popup.querySelector(`.film-details__close-btn`);
+
+    const showPopup = () => {
+      render(document.body, popup);
+    };
+
+    const closePopup = () => {
+      popup.remove();
+    };
+
+    const onPopupEscPress = (evt) => {
+      if (isEscEvent(evt)) {
+        closePopup();
+      }
+    };
+
+    const interactiveCardElements = [cardTitle, cardPoster, cardComments];
+
+    interactiveCardElements.forEach((element) => {
+      element.addEventListener(`click`, showPopup);
+    });
+
+    popupCloseButton.addEventListener(`click`, closePopup);
+    window.addEventListener(`keydown`, onPopupEscPress);
+  });
 };
 
 renderFilmCards(filmsMainList, films, FILM_MAIN_COUNT);
@@ -94,7 +130,6 @@ const createExtraMarkup = (criterion, title) => {
 };
 
 // cheking the neccessity of rendering extra blocks
-
 const renderFilmsListExtra = (filmCards) => {
   const checkTopRated = (movies) => {
     let counter = 0;
@@ -163,32 +198,20 @@ const renderFooterStats = (amount) => {
 
 renderFooterStats(FILM_AMOUNT);
 
-// popup rendering
-const popupFilmCard = films[getRandomNumber(0, films.length - 1, true)];
-const renderPopup = (film) => {
-  render(document.body, new FilmDetails(film).getElement());
-
-  const filmDetailsElement = document.querySelector(`.film-details`);
-  const filmDetailsCloseButton = filmDetailsElement.querySelector(`.film-details__close-btn`);
-  const onFilmDetailsCloseButtonClick = function (evt) {
-    filmDetailsElement.classList.add(`visually-hidden`);
-    evt.target.removeEventListener(`click`, onFilmDetailsCloseButtonClick);
-  };
-
-  filmDetailsCloseButton.addEventListener(`click`, onFilmDetailsCloseButtonClick);
-
-  // comments rendering
+/*
+// comments rendering
   const commentsContainer = filmDetailsElement.querySelector(`.film-details__comments-list`);
 
   const renderComments = () => {
-    const createCommentsMarkup = Array.from(film.comments).slice(0, film.commentsCount).map((comment) => {
-      return new CommentTemplate(comment).getElement();
-    }).join(`\n`);
-
-    render(commentsContainer, createCommentsMarkup);
+    const getCommentsMarkup = Array.from(film.comments).slice(0, film.commentsCount).map((comment) => {
+      return new Comment(comment).getElement();
+    });
+    for (const comment of getCommentsMarkup) {
+      render(commentsContainer, comment);
+    }
   };
 
   renderComments();
 };
 
-renderPopup(popupFilmCard);
+*/

@@ -15,7 +15,7 @@ const createCommentTemplate = (comment) =>
     </div>
   </li>`;
 
-class CommentTemplate {
+class Comment {
   constructor(comment) {
     this._element = null;
     this._comment = comment;
@@ -37,4 +37,4 @@ class CommentTemplate {
   }
 }
 
-export default CommentTemplate;
+export default Comment;
