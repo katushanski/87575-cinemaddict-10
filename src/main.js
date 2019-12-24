@@ -6,6 +6,7 @@ import {
   sortRandomArray,
   render
 } from './util.js';
+import Comment from './components/comment.js';
 import CardElement from './components/film-card.js';
 import FilmsContainer from './components/films-container.js';
 import FilmsList from './components/films-list.js';
@@ -86,6 +87,18 @@ const renderFilmCards = (container, list, count) => {
   list.slice(0, count).forEach((film) => {
     const card = new CardElement(film).getElement();
     const popup = new Popup(film).getElement();
+
+    const commentsContainer = popup.querySelector(`.film-details__comments-list`);
+    const renderComments = (container, comments) => {
+      const commentsListMarkup = film.comments.map((comment) => {
+        return new Comment(comment).getElement();
+      });
+      for (const comment of commentsListMarkup) {
+        render(container, comment);
+      }
+    };
+
+    renderComments(commentsContainer, film.comments);
 
     render(filmsListContainer, card); // мне же сначала нужно отрендерить, а потом искать элементы?
 

@@ -1,18 +1,7 @@
 import {createElement} from '../util.js';
-import Comment from './comment.js';
-
 
 const createPopupTemplate = (card) => {
   const {poster, title, rating, director, writers, country, actors, year, duration, genre, description, comments, commentsCount, isInWatchlist, isWatched, isFavorite} = card;
-
-  const getCommentsListMarkup = () => {
-    const commentsList = (comments).slice(0, commentsCount);
-    const commentsMarkup = ``;
-    commentsList.forEach((comment) => {
-      const newComment = new Comment(comment).getElement();
-      return commentsMarkup + newComment;
-    });
-  };
 
   return (
     `<section class="film-details">
@@ -95,7 +84,6 @@ const createPopupTemplate = (card) => {
         <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCount}</span></h3>
 
         <ul class="film-details__comments-list">
-          ${getCommentsListMarkup()}
         </ul>
 
         <div class="film-details__new-comment">
