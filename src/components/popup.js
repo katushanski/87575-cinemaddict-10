@@ -1,7 +1,7 @@
 import {createElement} from '../util.js';
 
 const createPopupTemplate = (card) => {
-  const {poster, title, rating, director, writers, country, actors, year, duration, genre, description, comments, commentsCount, isInWatchlist, isWatched, isFavorite} = card;
+  const {poster, title, rating, director, writers, country, actors, year, duration, genre, description, commentsCount, isInWatchlist, isWatched, isFavorite} = card;
 
   return (
     `<section class="film-details">

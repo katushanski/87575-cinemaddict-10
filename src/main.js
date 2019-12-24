@@ -89,12 +89,12 @@ const renderFilmCards = (container, list, count) => {
     const popup = new Popup(film).getElement();
 
     const commentsContainer = popup.querySelector(`.film-details__comments-list`);
-    const renderComments = (container, comments) => {
+    const renderComments = (commentContainer) => {
       const commentsListMarkup = film.comments.map((comment) => {
         return new Comment(comment).getElement();
       });
       for (const comment of commentsListMarkup) {
-        render(container, comment);
+        render(commentContainer, comment);
       }
     };
 
