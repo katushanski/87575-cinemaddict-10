@@ -73,15 +73,12 @@ render(siteMainElement, new FilterComponent(allFilters).getElement());
 render(siteMainElement, new SortComponent().getElement());
 
 // main list movies rendering
-render(siteMainElement, new FilmsList().getElement());
-const filmsElement = siteMainElement.querySelector(`.films`);
-const filmsMainList = siteMainElement.querySelector(`.films-list`);
+const filmsList = new FilmsList();
+render(siteMainElement, filmsList.getElement());
+const filmsElement = filmsList.getElement();
 
 // rendering each card and corresponding popup as well as adding event listeners
 const renderFilmCards = (container, list, count) => {
-  render(container, new FilmsList().getContainer());
-  let filmsListContainer = container.querySelector(`.films-list__container`);
-
   list.slice(0, count).forEach((film) => {
     const card = new CardElement(film);
     const popup = new Popup(film);
@@ -89,7 +86,7 @@ const renderFilmCards = (container, list, count) => {
     const commentsContainer = popup.getElement().querySelector(`.film-details__comments-list`);
     popup.renderComments(commentsContainer, film.comments);
 
-    render(filmsListContainer, card.getElement());
+    render(container, card.getElement());
 
     const cardTitle = card.getElement().querySelector(`.film-card__title`);
     const cardPoster = card.getElement().querySelector(`.film-card__poster`);
@@ -122,70 +119,62 @@ const renderFilmCards = (container, list, count) => {
   });
 };
 
-renderFilmCards(filmsMainList, films, FILM_MAIN_COUNT);
+renderFilmCards(filmsList.getContainer(), films, FILM_MAIN_COUNT);
 
 // extra list movies rendering
-const renderFilmsListExtra = (criterion, title) => {
-  render(filmsElement, new FilmsListExtra(title).getElement());
-  let extraList = filmsElement.querySelector(`.films-list--extra:last-of-type`);
+const renderFilmsListExtra = (container, criterion, title) => {
+  const extraSection = new FilmsListExtra(title);
+  render(filmsElement, extraSection.getElement());
   let sortedFilmCards = sortRandomArray(films.slice(), criterion);
-  renderFilmCards(extraList, sortedFilmCards, FILM_EXTRA_COUNT);
+  renderFilmCards(extraSection.getContainer(), sortedFilmCards, FILM_EXTRA_COUNT);
+};
+
+const checkTopRated = (movies) => {
+  let counter = 0;
+  for (const film of movies) {
+    if (film.rating > 0) {
+      counter = counter + 1;
+    }
+  }
+  return counter > 0;
+};
+
+const checkMostCommented = (movies) => {
+  let counter = 0;
+  for (const film of movies) {
+    if (film.comments.length > 0) {
+      counter = counter + 1;
+    }
+  }
+  return counter > 0;
 };
 
 // cheking the neccessity of rendering extra blocks
-const getFilmsListExtra = (filmCards) => {
-  const checkTopRated = (movies) => {
-    let counter = 0;
-
-    for (const film of movies) {
-      if (film.rating > 0) {
-        counter = counter + 1;
-      }
-    }
-
-    return counter > 0;
-  };
-
+const renderFilmsExtraLists = (container, filmCards) => {
   const isTopRated = checkTopRated(filmCards);
 
   if (isTopRated) {
-    renderFilmsListExtra(`rating`, `Top rated`);
+    renderFilmsListExtra(container, `rating`, `Top rated`);
   }
-
-  const checkMostCommented = (movies) => {
-    let counter = 0;
-
-    for (const film of movies) {
-      if (film.comments.length > 0) {
-        counter = counter + 1;
-      }
-    }
-
-    return counter > 0;
-  };
-
   const isMostCommented = checkMostCommented(filmCards);
 
   if (isMostCommented) {
-    renderFilmsListExtra(`commentsCount`, `Most commented`);
+    renderFilmsListExtra(container, `commentsCount`, `Most commented`);
   }
 };
 
-getFilmsListExtra(films);
-
 // "show more" button rendering
 if (films.length) {
-  render(filmsMainList, new ShowMoreButton().getElement());
-  const showMoreButton = filmsMainList.querySelector(`.films-list__show-more`);
+  render(filmsList.getElement().querySelector(`.films-list`), new ShowMoreButton().getElement());
+  const showMoreButton = filmsList.getElement().querySelector(`.films-list__show-more`);
   let showingFilmsCount = FILM_MAIN_COUNT;
 
   showMoreButton.addEventListener(`click`, () => {
     const prevFilmsCount = showingFilmsCount;
     showingFilmsCount = showingFilmsCount + FILM_MAIN_COUNT;
-    const filmsListContainer = filmsMainList.querySelector(`.films-list__container`);
 
     films.slice(prevFilmsCount, showingFilmsCount)
-      .forEach((film) => render(filmsListContainer, new CardElement(film).getElement()));
+      .forEach((film) => render(filmsList.getContainer(), new CardElement(film).getElement()));
 
     if (showingFilmsCount >= films.length) {
       showMoreButton.remove();
@@ -198,6 +187,7 @@ if (films.length) {
   filmsListTitle.innerHTML = `There are no movies in our database`;
 }
 
+renderFilmsExtraLists(filmsList.getElement(), films);
 // footer stats rendering
 const renderFooterStats = (amount) => {
   const siteFooterElement = document.querySelector(`footer`);

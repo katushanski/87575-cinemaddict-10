@@ -1,31 +1,24 @@
 import {createElement} from '../util.js';
 
-const createFilmsContainerTemplate = () =>
-  `<div class="films-list__container"></div>`;
-
 const createFilmsListTemplate = () =>
   `<section class="films">
     <section class="films-list">
       <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
+      <div class="films-list__container"></div>
     </section>
   </section>`;
 
 class FilmsList {
   constructor() {
     this._element = null;
-    this._container = null;
-  }
-
-  getContainer() {
-    if (!this._container) {
-      this._container = createElement(createFilmsContainerTemplate());
-    }
-
-    return this._container;
   }
 
   getTemplate() {
     return createFilmsListTemplate();
+  }
+
+  getContainer() {
+    return this.getElement().querySelector(`.films-list__container`);
   }
 
   getElement() {
