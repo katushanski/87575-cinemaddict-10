@@ -1,5 +1,8 @@
 import {createElement} from '../util.js';
 
+const createFilmsContainerTemplate = () =>
+  `<div class="films-list__container"></div>`;
+
 const createFilmsListTemplate = () =>
   `<section class="films">
     <section class="films-list">
@@ -10,6 +13,15 @@ const createFilmsListTemplate = () =>
 class FilmsList {
   constructor() {
     this._element = null;
+    this._container = null;
+  }
+
+  getContainer() {
+    if (!this._container) {
+      this._container = createElement(createFilmsContainerTemplate());
+    }
+
+    return this._container;
   }
 
   getTemplate() {

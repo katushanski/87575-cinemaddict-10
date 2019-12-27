@@ -2,10 +2,8 @@
 crucial keys
 */
 
-const escKeyCode = 27;
-
 const isEscEvent = (evt) =>
-  evt.keyCode === escKeyCode;
+  evt.key === `Escape` || evt.key === `Esc`;
 
 /*
 random values functions

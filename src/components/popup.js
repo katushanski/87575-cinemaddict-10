@@ -1,4 +1,5 @@
-import {createElement} from '../util.js';
+import {createElement, render} from '../util.js';
+import Comment from './comment.js';
 
 const createPopupTemplate = (card) => {
   const {poster, title, rating, director, writers, country, actors, year, duration, genre, description, commentsCount, isInWatchlist, isWatched, isFavorite} = card;
@@ -134,6 +135,17 @@ class Popup {
       this._element = createElement(this.getTemplate());
     }
     return this._element;
+  }
+
+  renderComments(container, comments) {
+    this._container = container;
+    this._comments = comments;
+    const commentsListMarkup = this._comments.map((comment) => {
+      return new Comment(comment).getElement();
+    });
+    for (const comment of commentsListMarkup) {
+      render(this._container, comment);
+    }
   }
 
   removeElement() {

@@ -14,7 +14,7 @@ const createFilterTemplate = (filters) => {
   </nav>`;
 };
 
-class NavFilter {
+class FilterComponent {
   constructor(filters) {
     this._element = null;
     this._filters = filters;
@@ -37,4 +37,4 @@ class NavFilter {
   }
 }
 
-export default NavFilter;
+export default FilterComponent;

@@ -6,15 +6,13 @@ import {
   sortRandomArray,
   render
 } from './util.js';
-import Comment from './components/comment.js';
 import CardElement from './components/film-card.js';
-import FilmsContainer from './components/films-container.js';
 import FilmsList from './components/films-list.js';
 import FilmsListExtra from './components/films-list-extra.js';
+import FilterComponent from './components/filter.js';
 import FooterStats from './components/footer-stats.js';
 import ShowMoreButton from './components/load-button.js';
-import NavFilter from './components/menu-nav.js';
-import SortTemplate from './components/menu-sort.js';
+import SortComponent from './components/menu-sort.js';
 import Popup from './components/popup.js';
 import PersonalRating from './components/user.js';
 
@@ -71,8 +69,8 @@ render(siteHeaderElement, new PersonalRating(getRandomNumber(0, 25, true)).getEl
 
 // main and menu markup
 const siteMainElement = document.querySelector(`.main`);
-render(siteMainElement, new NavFilter(allFilters).getElement());
-render(siteMainElement, new SortTemplate().getElement());
+render(siteMainElement, new FilterComponent(allFilters).getElement());
+render(siteMainElement, new SortComponent().getElement());
 
 // main list movies rendering
 render(siteMainElement, new FilmsList().getElement());
@@ -81,38 +79,30 @@ const filmsMainList = siteMainElement.querySelector(`.films-list`);
 
 // rendering each card and corresponding popup as well as adding event listeners
 const renderFilmCards = (container, list, count) => {
-  render(container, new FilmsContainer().getElement());
+  render(container, new FilmsList().getContainer());
   let filmsListContainer = container.querySelector(`.films-list__container`);
 
   list.slice(0, count).forEach((film) => {
-    const card = new CardElement(film).getElement();
-    const popup = new Popup(film).getElement();
+    const card = new CardElement(film);
+    const popup = new Popup(film);
 
-    const commentsContainer = popup.querySelector(`.film-details__comments-list`);
-    const renderComments = (commentContainer) => {
-      const commentsListMarkup = film.comments.map((comment) => {
-        return new Comment(comment).getElement();
-      });
-      for (const comment of commentsListMarkup) {
-        render(commentContainer, comment);
-      }
-    };
+    const commentsContainer = popup.getElement().querySelector(`.film-details__comments-list`);
+    popup.renderComments(commentsContainer, film.comments);
 
-    renderComments(commentsContainer, film.comments);
+    render(filmsListContainer, card.getElement());
 
-    render(filmsListContainer, card); // мне же сначала нужно отрендерить, а потом искать элементы?
-
-    const cardTitle = card.querySelector(`.film-card__title`);
-    const cardPoster = card.querySelector(`.film-card__poster`);
-    const cardComments = card.querySelector(`.film-card__comments`);
-    const popupCloseButton = popup.querySelector(`.film-details__close-btn`);
+    const cardTitle = card.getElement().querySelector(`.film-card__title`);
+    const cardPoster = card.getElement().querySelector(`.film-card__poster`);
+    const cardComments = card.getElement().querySelector(`.film-card__comments`);
+    const popupCloseButton = popup.getElement().querySelector(`.film-details__close-btn`);
 
     const showPopup = () => {
-      render(document.body, popup);
+      render(document.body, popup.getElement());
     };
 
     const closePopup = () => {
-      popup.remove();
+      popup.getElement().remove();
+      popup.removeElement();
     };
 
     const onPopupEscPress = (evt) => {
@@ -135,7 +125,7 @@ const renderFilmCards = (container, list, count) => {
 renderFilmCards(filmsMainList, films, FILM_MAIN_COUNT);
 
 // extra list movies rendering
-const createExtraMarkup = (criterion, title) => {
+const renderFilmsListExtra = (criterion, title) => {
   render(filmsElement, new FilmsListExtra(title).getElement());
   let extraList = filmsElement.querySelector(`.films-list--extra:last-of-type`);
   let sortedFilmCards = sortRandomArray(films.slice(), criterion);
@@ -143,7 +133,7 @@ const createExtraMarkup = (criterion, title) => {
 };
 
 // cheking the neccessity of rendering extra blocks
-const renderFilmsListExtra = (filmCards) => {
+const getFilmsListExtra = (filmCards) => {
   const checkTopRated = (movies) => {
     let counter = 0;
 
@@ -159,7 +149,7 @@ const renderFilmsListExtra = (filmCards) => {
   const isTopRated = checkTopRated(filmCards);
 
   if (isTopRated) {
-    createExtraMarkup(`rating`, `Top rated`);
+    renderFilmsListExtra(`rating`, `Top rated`);
   }
 
   const checkMostCommented = (movies) => {
@@ -177,31 +167,36 @@ const renderFilmsListExtra = (filmCards) => {
   const isMostCommented = checkMostCommented(filmCards);
 
   if (isMostCommented) {
-    createExtraMarkup(`commentsCount`, `Most commented`);
+    renderFilmsListExtra(`commentsCount`, `Most commented`);
   }
 };
 
-renderFilmsListExtra(films);
+getFilmsListExtra(films);
 
 // "show more" button rendering
-render(filmsMainList, new ShowMoreButton().getElement());
-const showMoreButton = filmsMainList.querySelector(`.films-list__show-more`);
-let showingFilmsCount = FILM_MAIN_COUNT;
+if (films.length) {
+  render(filmsMainList, new ShowMoreButton().getElement());
+  const showMoreButton = filmsMainList.querySelector(`.films-list__show-more`);
+  let showingFilmsCount = FILM_MAIN_COUNT;
 
-showMoreButton.addEventListener(`click`, () => {
-  const prevFilmsCount = showingFilmsCount;
-  showingFilmsCount = showingFilmsCount + FILM_MAIN_COUNT;
-  const filmsListContainer = filmsMainList.querySelector(`.films-list__container`);
+  showMoreButton.addEventListener(`click`, () => {
+    const prevFilmsCount = showingFilmsCount;
+    showingFilmsCount = showingFilmsCount + FILM_MAIN_COUNT;
+    const filmsListContainer = filmsMainList.querySelector(`.films-list__container`);
 
-  films.slice(prevFilmsCount, showingFilmsCount)
-    .forEach((film) => render(filmsListContainer, new CardElement(film).getElement()));
+    films.slice(prevFilmsCount, showingFilmsCount)
+      .forEach((film) => render(filmsListContainer, new CardElement(film).getElement()));
 
-  if (showingFilmsCount >= films.length) {
-    showMoreButton.remove();
-  } else {
-    filmsElement.querySelector(`.films-list__title`).innerHTML = `There are no movies in our database`;
-  }
-});
+    if (showingFilmsCount >= films.length) {
+      showMoreButton.remove();
+    }
+  });
+} else {
+  const filmsListTitle = filmsElement.querySelector(`.films-list__title`);
+
+  filmsListTitle.classList.remove(`visually-hidden`);
+  filmsListTitle.innerHTML = `There are no movies in our database`;
+}
 
 // footer stats rendering
 const renderFooterStats = (amount) => {
@@ -210,21 +205,3 @@ const renderFooterStats = (amount) => {
 };
 
 renderFooterStats(FILM_AMOUNT);
-
-/*
-// comments rendering
-  const commentsContainer = filmDetailsElement.querySelector(`.film-details__comments-list`);
-
-  const renderComments = () => {
-    const getCommentsMarkup = Array.from(film.comments).slice(0, film.commentsCount).map((comment) => {
-      return new Comment(comment).getElement();
-    });
-    for (const comment of getCommentsMarkup) {
-      render(commentsContainer, comment);
-    }
-  };
-
-  renderComments();
-};
-
-*/
