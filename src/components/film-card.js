@@ -1,4 +1,6 @@
-export const createCardElementTemplate = (card) => {
+import {createElement} from '../util.js';
+
+const createCardElementTemplate = (card) => {
   const {poster, title, rating, year, duration, genre, description, commentsCount, isInWatchlist, isWatched, isFavorite} = card;
   const activeCheck = (check) => check ? `film-card__controls-item--active` : ``;
   return (
@@ -21,3 +23,28 @@ export const createCardElementTemplate = (card) => {
     </article>`
   );
 };
+
+class CardElement {
+  constructor(card) {
+    this._element = null;
+    this._card = card;
+  }
+
+  getTemplate() {
+    return createCardElementTemplate(this._card);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export default CardElement;

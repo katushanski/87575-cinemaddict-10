@@ -1,5 +1,9 @@
-export const createFilmDetailsTemplate = (card) => {
-  const {poster, title, rating, year, duration, genre, description, commentsCount, isInWatchlist, isWatched, isFavorite} = card;
+import {createElement, render} from '../util.js';
+import Comment from './comment.js';
+
+const createPopupTemplate = (card) => {
+  const {poster, title, rating, director, writers, country, actors, year, duration, genre, description, commentsCount, isInWatchlist, isWatched, isFavorite} = card;
+
   return (
     `<section class="film-details">
       <form class="film-details__inner" action="" method="get">
@@ -29,15 +33,15 @@ export const createFilmDetailsTemplate = (card) => {
           <table class="film-details__table">
             <tr class="film-details__row">
               <td class="film-details__term">Director</td>
-              <td class="film-details__cell">Anthony Mann</td>
+              <td class="film-details__cell">${director}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Writers</td>
-              <td class="film-details__cell">Anne Wigton, Heinz Herald, Richard Weil</td>
+              <td class="film-details__cell">${writers}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Actors</td>
-              <td class="film-details__cell">Erich von Stroheim, Mary Beth Hughes, Dan Duryea</td>
+              <td class="film-details__cell">${actors}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Release Date</td>
@@ -49,14 +53,12 @@ export const createFilmDetailsTemplate = (card) => {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>
-              <td class="film-details__cell">USA</td>
+              <td class="film-details__cell">${country}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Genres</td>
               <td class="film-details__cell">
                 <span class="film-details__genre">${genre}</span>
-                <span class="film-details__genre">Film-Noir</span>
-                <span class="film-details__genre">Mystery</span></td>
             </tr>
           </table>
 
@@ -117,3 +119,38 @@ export const createFilmDetailsTemplate = (card) => {
     </section>`
   );
 };
+
+class Popup {
+  constructor(film) {
+    this._element = null;
+    this._film = film;
+  }
+
+  getTemplate() {
+    return createPopupTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  renderComments(comments) {
+    this._container = this.getElement().querySelector(`.film-details__comments-list`);
+    this._comments = comments;
+    const commentsListMarkup = this._comments.map((comment) => {
+      return new Comment(comment).getElement();
+    });
+    for (const comment of commentsListMarkup) {
+      render(this._container, comment);
+    }
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export default Popup;
