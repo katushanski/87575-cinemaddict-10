@@ -83,18 +83,18 @@ const renderFilmCards = (container, list, count) => {
     const card = new CardElement(film);
     const popup = new Popup(film);
 
-    const commentsContainer = popup.getElement().querySelector(`.film-details__comments-list`);
-    popup.renderComments(commentsContainer, film.comments);
-
     render(container, card.getElement());
 
     const cardTitle = card.getElement().querySelector(`.film-card__title`);
     const cardPoster = card.getElement().querySelector(`.film-card__poster`);
     const cardComments = card.getElement().querySelector(`.film-card__comments`);
-    const popupCloseButton = popup.getElement().querySelector(`.film-details__close-btn`);
 
     const showPopup = () => {
+      popup.renderComments(film.comments);
       render(document.body, popup.getElement());
+      const popupCloseButton = popup.getElement().querySelector(`.film-details__close-btn`);
+      popupCloseButton.addEventListener(`click`, closePopup);
+      window.addEventListener(`keydown`, onPopupEscPress);
     };
 
     const closePopup = () => {
@@ -113,9 +113,6 @@ const renderFilmCards = (container, list, count) => {
     interactiveCardElements.forEach((element) => {
       element.addEventListener(`click`, showPopup);
     });
-
-    popupCloseButton.addEventListener(`click`, closePopup);
-    window.addEventListener(`keydown`, onPopupEscPress);
   });
 };
 

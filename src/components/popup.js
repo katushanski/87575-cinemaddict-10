@@ -137,8 +137,8 @@ class Popup {
     return this._element;
   }
 
-  renderComments(container, comments) {
-    this._container = container;
+  renderComments(comments) {
+    this._container = this.getElement().querySelector(`.film-details__comments-list`);
     this._comments = comments;
     const commentsListMarkup = this._comments.map((comment) => {
       return new Comment(comment).getElement();
