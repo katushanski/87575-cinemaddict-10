@@ -1,5 +1,5 @@
 /*
-crucial keys
+evt utils
 */
 
 const isEscEvent = (evt) =>
@@ -24,25 +24,6 @@ const getCountByProperty = (movies, property) =>
   movies.filter((film) => film[property]).length;
 
 /*
-rendering utils
-*/
-
-const createElement = (template) => {
-  const newElement = document.createElement(`div`);
-  newElement.innerHTML = template;
-
-  return newElement.firstChild;
-};
-
-const render = (container, element, place = `beforeend`) => {
-  switch (place) {
-    case `beforeend`:
-      container.append(element);
-      break;
-  }
-};
-
-/*
 sorting
 */
 
@@ -65,7 +46,5 @@ export {
   getRandomIndex,
   getRandomBoolean,
   getCountByProperty,
-  createElement,
-  render,
   sortRandomArray
 };

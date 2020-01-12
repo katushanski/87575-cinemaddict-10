@@ -1,5 +1,6 @@
-import {createElement, render} from '../util.js';
+import AbstractComponent from './abstract-component.js';
 import Comment from './comment.js';
+import {render} from '../utils/render.js';
 
 const createPopupTemplate = (card) => {
   const {poster, title, rating, director, writers, country, actors, year, duration, genre, description, commentsCount, isInWatchlist, isWatched, isFavorite} = card;
@@ -120,21 +121,14 @@ const createPopupTemplate = (card) => {
   );
 };
 
-class Popup {
+class Popup extends AbstractComponent {
   constructor(film) {
-    this._element = null;
+    super(film);
     this._film = film;
   }
 
   getTemplate() {
     return createPopupTemplate(this._film);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
   }
 
   renderComments(comments) {
@@ -148,8 +142,9 @@ class Popup {
     }
   }
 
-  removeElement() {
-    this._element = null;
+  setCloseButtonClickHandler(handler) {
+    this.getElement().querySelector(`.film-details__close-btn`)
+      .addEventListener(`click`, handler);
   }
 }
 

@@ -1,4 +1,4 @@
-import {createElement} from '../util.js';
+import AbstractComponent from './abstract-component.js';
 
 const createCardElementTemplate = (card) => {
   const {poster, title, rating, year, duration, genre, description, commentsCount, isInWatchlist, isWatched, isFavorite} = card;
@@ -24,26 +24,14 @@ const createCardElementTemplate = (card) => {
   );
 };
 
-class CardElement {
+class CardElement extends AbstractComponent {
   constructor(card) {
-    this._element = null;
+    super(card);
     this._card = card;
   }
 
   getTemplate() {
     return createCardElementTemplate(this._card);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

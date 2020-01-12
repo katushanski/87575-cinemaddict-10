@@ -1,10 +1,10 @@
 import {generateFilmCards} from './mock/mock.js';
+import {render, remove} from './utils/render.js';
 import {
   isEscEvent,
   getRandomNumber,
   getCountByProperty,
   sortRandomArray,
-  render
 } from './util.js';
 import CardElement from './components/film-card.js';
 import FilmsList from './components/films-list.js';
@@ -92,14 +92,12 @@ const renderFilmCards = (container, list, count) => {
     const showPopup = () => {
       popup.renderComments(film.comments);
       render(document.body, popup.getElement());
-      const popupCloseButton = popup.getElement().querySelector(`.film-details__close-btn`);
-      popupCloseButton.addEventListener(`click`, closePopup);
-      window.addEventListener(`keydown`, onPopupEscPress);
+      popup.setCloseButtonClickHandler(closePopup);
+      document.addEventListener(`keydown`, onPopupEscPress);
     };
 
     const closePopup = () => {
-      popup.getElement().remove();
-      popup.removeElement();
+      remove(popup);
     };
 
     const onPopupEscPress = (evt) => {
@@ -110,7 +108,7 @@ const renderFilmCards = (container, list, count) => {
 
     const interactiveCardElements = [cardTitle, cardPoster, cardComments];
 
-    interactiveCardElements.forEach((element) => {
+    interactiveCardElements.forEach((element) => { // Могу ли я оставить здесь слушатель события?
       element.addEventListener(`click`, showPopup);
     });
   });
@@ -162,11 +160,11 @@ const renderFilmsExtraLists = (container, filmCards) => {
 
 // "show more" button rendering
 if (films.length) {
-  render(filmsList.getElement().querySelector(`.films-list`), new ShowMoreButton().getElement());
-  const showMoreButton = filmsList.getElement().querySelector(`.films-list__show-more`);
+  const showMoreButton = new ShowMoreButton();
+  render(filmsList.getElement().querySelector(`.films-list`), showMoreButton.getElement());
   let showingFilmsCount = FILM_MAIN_COUNT;
 
-  showMoreButton.addEventListener(`click`, () => {
+  showMoreButton.setClickHandler(() => {
     const prevFilmsCount = showingFilmsCount;
     showingFilmsCount = showingFilmsCount + FILM_MAIN_COUNT;
 
@@ -174,7 +172,7 @@ if (films.length) {
       .forEach((film) => render(filmsList.getContainer(), new CardElement(film).getElement()));
 
     if (showingFilmsCount >= films.length) {
-      showMoreButton.remove();
+      remove(showMoreButton);
     }
   });
 } else {
