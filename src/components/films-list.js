@@ -17,6 +17,10 @@ class FilmsList extends AbstractComponent {
     return createFilmsListTemplate();
   }
 
+  getSection() {
+    return this.getElement().querySelector(`.films`);
+  }
+
   getContainer() {
     return this.getElement().querySelector(`.films-list__container`);
   }
