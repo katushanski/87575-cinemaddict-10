@@ -1,11 +1,4 @@
 /*
-evt utils
-*/
-
-const isEscEvent = (evt) =>
-  evt.key === `Escape` || evt.key === `Esc`;
-
-/*
 random values functions
 */
 
@@ -41,7 +34,6 @@ const sortRandomArray = (list, criterion) => {
 };
 
 export {
-  isEscEvent,
   getRandomNumber,
   getRandomIndex,
   getRandomBoolean,

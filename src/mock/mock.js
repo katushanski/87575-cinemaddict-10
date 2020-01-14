@@ -1,4 +1,4 @@
-import {getRandomNumber, getRandomIndex, getRandomBoolean} from '../util.js';
+import {getRandomNumber, getRandomIndex, getRandomBoolean} from '../utils/random.js';
 
 const GENRES = [
   `Musical`,
