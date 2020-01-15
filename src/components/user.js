@@ -1,4 +1,4 @@
-import {createElement} from '../util.js';
+import AbstractComponent from './abstract-component.js';
 
 const createPersonalRatingTemplate = (personalRating) => {
   const getPersonalRating = (rating) => {
@@ -19,26 +19,14 @@ const createPersonalRatingTemplate = (personalRating) => {
   </section>`;
 };
 
-class PersonalRating {
+class PersonalRating extends AbstractComponent {
   constructor(personalRating) {
-    this._element = null;
+    super(personalRating);
     this._rating = personalRating;
   }
 
   getTemplate() {
     return createPersonalRatingTemplate(this._rating);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

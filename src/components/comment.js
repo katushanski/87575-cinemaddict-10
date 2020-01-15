@@ -1,4 +1,4 @@
-import {createElement} from '../util.js';
+import AbstractComponent from './abstract-component.js';
 
 const createCommentTemplate = (comment) =>
   `<li class="film-details__comment">
@@ -15,25 +15,14 @@ const createCommentTemplate = (comment) =>
     </div>
   </li>`;
 
-class Comment {
+class Comment extends AbstractComponent {
   constructor(comment) {
-    this._element = null;
+    super(comment);
     this._comment = comment;
   }
 
   getTemplate() {
     return createCommentTemplate(this._comment);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

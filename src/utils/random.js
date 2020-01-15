@@ -1,11 +1,4 @@
 /*
-crucial keys
-*/
-
-const isEscEvent = (evt) =>
-  evt.key === `Escape` || evt.key === `Esc`;
-
-/*
 random values functions
 */
 
@@ -22,25 +15,6 @@ const getRandomBoolean = () =>
 
 const getCountByProperty = (movies, property) =>
   movies.filter((film) => film[property]).length;
-
-/*
-rendering utils
-*/
-
-const createElement = (template) => {
-  const newElement = document.createElement(`div`);
-  newElement.innerHTML = template;
-
-  return newElement.firstChild;
-};
-
-const render = (container, element, place = `beforeend`) => {
-  switch (place) {
-    case `beforeend`:
-      container.append(element);
-      break;
-  }
-};
 
 /*
 sorting
@@ -60,12 +34,9 @@ const sortRandomArray = (list, criterion) => {
 };
 
 export {
-  isEscEvent,
   getRandomNumber,
   getRandomIndex,
   getRandomBoolean,
   getCountByProperty,
-  createElement,
-  render,
   sortRandomArray
 };
