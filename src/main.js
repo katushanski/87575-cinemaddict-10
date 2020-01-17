@@ -1,13 +1,13 @@
 import {generateFilmCards} from './mock/mock.js';
 import {render} from './utils/render.js';
 import {getRandomNumber, getCountByProperty} from './utils/random.js';
-import PageController from './controllers/controller.js';
 import FilterComponent from './components/filter.js';
+import PageController from './controllers/controller.js';
 import FooterStats from './components/footer-stats.js';
-import SortComponent from './components/menu-sort.js';
 import PersonalRating from './components/user.js';
 
 const FILM_AMOUNT = 15;
+
 
 // array that contains all movies
 const films = generateFilmCards(FILM_AMOUNT);
@@ -52,14 +52,13 @@ const allFilters = [
   }
 ];
 
-// header and user markup
-const siteHeaderElement = document.querySelector(`.header`);
-render(siteHeaderElement, new PersonalRating(getRandomNumber(0, 25, true)).getElement());
-
 // main and menu markup
 const siteMainElement = document.querySelector(`.main`);
 render(siteMainElement, new FilterComponent(allFilters).getElement());
-render(siteMainElement, new SortComponent().getElement());
+
+// header and user markup
+const siteHeaderElement = document.querySelector(`.header`);
+render(siteHeaderElement, new PersonalRating(getRandomNumber(0, 25, true)).getElement());
 
 // page controller
 const pageController = new PageController(document.querySelector(`main`));
