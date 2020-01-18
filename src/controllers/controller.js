@@ -24,6 +24,10 @@ class PageController {
     const sortComponent = this._sortComponent;
     render(this._container, sortComponent.getElement());
 
+    const renderShowMoreButton = render(this._filmsList.getElement().querySelector(`.films-list`), this._showMoreButton.getElement());
+    let showingFilmsCount = FILM_MAIN_COUNT;
+
+    // sorting films list
     sortComponent.setSortTypeChangeHandler((sortType) => {
       let sortedFilms = [];
       switch (sortType) {
@@ -38,15 +42,13 @@ class PageController {
           break;
       }
 
+      let currentFilmsCount = showingFilmsCount;
+
+      // additional function for clearing cards list before rendering sorted films
       this._filmsListContainer.innerHTML = ``;
+      this.renderFilmCards(this._filmsListContainer, sortedFilms, currentFilmsCount);
 
-      this.renderFilmCards(this._filmsListContainer, sortedFilms, FILM_MAIN_COUNT);
-
-      if (sortType === SortType.DEFAULT) {
-        render(this._filmsList.getElement().querySelector(`.films-list`), this._showMoreButton.getElement());
-      } else {
-        remove(this._loadMoreButtonComponent);
-      }
+      renderShowMoreButton();
     });
 
     // main list movies rendering
@@ -60,7 +62,6 @@ class PageController {
     if (films.length) {
 
       render(this._filmsList.getElement().querySelector(`.films-list`), this._showMoreButton.getElement());
-      let showingFilmsCount = FILM_MAIN_COUNT;
 
       this._showMoreButton.setClickHandler(() => {
         const prevFilmsCount = showingFilmsCount;
