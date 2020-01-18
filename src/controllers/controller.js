@@ -24,7 +24,6 @@ class PageController {
     const sortComponent = this._sortComponent;
     render(this._container, sortComponent.getElement());
 
-    const renderShowMoreButton = render(this._filmsList.getElement().querySelector(`.films-list`), this._showMoreButton.getElement());
     let showingFilmsCount = FILM_MAIN_COUNT;
 
     // sorting films list
@@ -42,12 +41,11 @@ class PageController {
           break;
       }
 
-      let currentFilmsCount = showingFilmsCount;
+      showingFilmsCount = FILM_MAIN_COUNT;
 
       // additional function for clearing cards list before rendering sorted films
       this._filmsListContainer.innerHTML = ``;
-      this.renderFilmCards(this._filmsListContainer, sortedFilms, currentFilmsCount);
-
+      this.renderFilmCards(this._filmsListContainer, sortedFilms, showingFilmsCount);
       renderShowMoreButton();
     });
 
@@ -59,26 +57,27 @@ class PageController {
     this.renderFilmCards(this._filmsList.getContainer(), films, FILM_MAIN_COUNT);
 
     // "show more" button rendering
-    if (films.length) {
+    const renderShowMoreButton = () => {
+      if (films.length) {
+        render(this._filmsList.getElement().querySelector(`.films-list`), this._showMoreButton.getElement());
 
-      render(this._filmsList.getElement().querySelector(`.films-list`), this._showMoreButton.getElement());
+        this._showMoreButton.setClickHandler(() => {
+          const prevFilmsCount = showingFilmsCount;
+          showingFilmsCount = showingFilmsCount + FILM_MAIN_COUNT;
 
-      this._showMoreButton.setClickHandler(() => {
-        const prevFilmsCount = showingFilmsCount;
-        showingFilmsCount = showingFilmsCount + FILM_MAIN_COUNT;
+          films.slice(prevFilmsCount, showingFilmsCount)
+            .forEach((film) => render(this._filmsList.getContainer(), new CardElement(film).getElement()));
 
-        films.slice(prevFilmsCount, showingFilmsCount)
-          .forEach((film) => render(this._filmsList.getContainer(), new CardElement(film).getElement()));
-
-        if (showingFilmsCount >= films.length) {
-          remove(this._showMoreButton);
-        }
-      });
-    } else {
-      const filmsListTitle = filmsElement.querySelector(`.films-list__title`);
-      filmsListTitle.classList.remove(`visually-hidden`);
-      filmsListTitle.innerHTML = `There are no movies in our database`;
-    }
+          if (showingFilmsCount >= films.length) {
+            remove(this._showMoreButton);
+          }
+        });
+      } else {
+        const filmsListTitle = filmsElement.querySelector(`.films-list__title`);
+        filmsListTitle.classList.remove(`visually-hidden`);
+        filmsListTitle.innerHTML = `There are no movies in our database`;
+      }
+    };
 
     this.renderFilmsExtraLists(this._filmsList.getElement(), films);
   }
