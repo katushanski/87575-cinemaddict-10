@@ -1,6 +1,6 @@
 import AbstractComponent from './abstract-component.js';
 
-export const SortType = {
+export const SortType = {// может вынести это в utils?
   DEFAULT: `default`,
   DATE: `date`,
   RATING: `rating`,
@@ -26,23 +26,22 @@ class SortComponent extends AbstractComponent {
 
   setSortTypeChangeHandler(handler) {
     this.getElement().addEventListener(`click`, (evt) => {
+      evt.preventDefault();
       if (evt.target.tagName !== `A`) {
         return;
       }
-
-      evt.preventDefault();
 
       const sortType = evt.target.dataset.sortType;
       if (this._currentSortType === sortType) {
         return;
       }
 
-      this._element.querySelector(`.sort__button--active`)
+      this.getElement().querySelector(`.sort__button--active`)
         .classList.remove(`sort__button--active`);
       evt.target.classList.add(`sort__button--active`);
 
       this._currentSortType = sortType;
-      handler(sortType);
+      handler(this._currentSortType);
     });
   }
 }

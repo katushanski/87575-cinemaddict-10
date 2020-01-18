@@ -15,31 +15,38 @@ class PageController {
   constructor(container) {
     this._container = container;
     this._filmsList = new FilmsList();
+    this._filmsListContainer = this._filmsList.getContainer();
     this._showMoreButton = new ShowMoreButton();
     this._sortComponent = new SortComponent();
   }
 
   render(films) {
     const sortComponent = this._sortComponent;
-    render(this._container, sortComponent);
+    render(this._container, sortComponent.getElement());
 
     sortComponent.setSortTypeChangeHandler((sortType) => {
       let sortedFilms = [];
       switch (sortType) {
         case SortType.DEFAULT:
-          sortedFilms = films.slice(0);
+          sortedFilms = films.slice();
           break;
         case SortType.DATE:
-          sortedFilms = films.slice(0).sort((a, b) => b.date - a.date);
+          sortedFilms = films.slice().sort((a, b) => b.year - a.year);
           break;
         case SortType.RATING:
-          sortedFilms = films.slice(0).sort((a, b) => b.rating - a.rating);
+          sortedFilms = films.slice().sort((a, b) => b.rating - a.rating);
           break;
       }
 
-      // здесь в учебном проекте написано taskListElement.innerHTML = ``; но я не понимаю смысл этого. Зачем здесь удалять содержимое списка с фильмами?
-      remove(this._showMoreButton);
-      this.renderFilmCards(this._container, sortedFilms);
+      this._filmsListContainer.innerHTML = ``;
+
+      this.renderFilmCards(this._filmsListContainer, sortedFilms, FILM_MAIN_COUNT);
+
+      if (sortType === SortType.DEFAULT) {
+        render(this._filmsList.getElement().querySelector(`.films-list`), this._showMoreButton.getElement());
+      } else {
+        remove(this._loadMoreButtonComponent);
+      }
     });
 
     // main list movies rendering
