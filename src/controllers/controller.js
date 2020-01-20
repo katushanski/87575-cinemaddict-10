@@ -59,6 +59,7 @@ class PageController {
     // "show more" button rendering
     const renderShowMoreButton = (allFilms) => {
       if (allFilms.length) {
+        remove(this._showMoreButton);
         render(this._filmsList.getElement().querySelector(`.films-list`), this._showMoreButton.getElement());
 
         this._showMoreButton.setClickHandler(() => {
