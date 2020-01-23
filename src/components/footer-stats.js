@@ -5,7 +5,7 @@ const createFooterStatsTemplate = (count) =>
     <p>${count} movies inside</p>
   </section>`;
 
-class FooterStats extends AbstractComponent {
+class FooterStatsComponent extends AbstractComponent {
   constructor(count) {
     super(count);
     this._count = count;
@@ -16,4 +16,4 @@ class FooterStats extends AbstractComponent {
   }
 }
 
-export default FooterStats;
+export default FooterStatsComponent;

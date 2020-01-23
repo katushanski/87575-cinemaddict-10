@@ -19,7 +19,7 @@ const createPersonalRatingTemplate = (personalRating) => {
   </section>`;
 };
 
-class PersonalRating extends AbstractComponent {
+class PersonalRatingComponent extends AbstractComponent {
   constructor(personalRating) {
     super(personalRating);
     this._rating = personalRating;
@@ -30,4 +30,4 @@ class PersonalRating extends AbstractComponent {
   }
 }
 
-export default PersonalRating;
+export default PersonalRatingComponent;

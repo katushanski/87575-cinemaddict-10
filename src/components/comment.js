@@ -15,7 +15,7 @@ const createCommentTemplate = (comment) =>
     </div>
   </li>`;
 
-class Comment extends AbstractComponent {
+class CommentComponent extends AbstractComponent {
   constructor(comment) {
     super(comment);
     this._comment = comment;
@@ -26,4 +26,4 @@ class Comment extends AbstractComponent {
   }
 }
 
-export default Comment;
+export default CommentComponent;

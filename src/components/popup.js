@@ -1,5 +1,5 @@
 import AbstractComponent from './abstract-component.js';
-import Comment from './comment.js';
+import CommentComponent from './comment.js';
 import {render} from '../utils/render.js';
 
 const createPopupTemplate = (card) => {
@@ -121,7 +121,7 @@ const createPopupTemplate = (card) => {
   );
 };
 
-class Popup extends AbstractComponent {
+class PopupComponent extends AbstractComponent {
   constructor(film) {
     super(film);
     this._film = film;
@@ -135,7 +135,7 @@ class Popup extends AbstractComponent {
     this._container = this.getElement().querySelector(`.film-details__comments-list`);
     this._comments = comments;
     const commentsListMarkup = this._comments.map((comment) => {
-      return new Comment(comment).getElement();
+      return new CommentComponent(comment).getElement();
     });
     for (const comment of commentsListMarkup) {
       render(this._container, comment);
@@ -146,6 +146,24 @@ class Popup extends AbstractComponent {
     this.getElement().querySelector(`.film-details__close-btn`)
       .addEventListener(`click`, handler);
   }
+
+  onWatchlistButtonClick(handler) {
+    this.getElement()
+      .querySelector(`.film-details__control-label--watchlist`)
+      .addEventListener(`click`, handler);
+  }
+
+  onWatchedButtonClick(handler) {
+    this.getElement()
+      .querySelector(`.film-details__control-label--watched`)
+      .addEventListener(`click`, handler);
+  }
+
+  onFavoritesButtonClick(handler) {
+    this.getElement()
+      .querySelector(`.film-details__control-label--favorite`)
+      .addEventListener(`click`, handler);
+  }
 }
 
-export default Popup;
+export default PopupComponent;

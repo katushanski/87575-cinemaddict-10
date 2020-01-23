@@ -9,7 +9,7 @@ const createFilmListExtraTemplate = (title) => {
   );
 };
 
-class FilmsListExtra extends AbstractComponent {
+class FilmsExtraListComponent extends AbstractComponent {
   constructor(title) {
     super(title);
     this._title = title;
@@ -24,4 +24,4 @@ class FilmsListExtra extends AbstractComponent {
   }
 }
 
-export default FilmsListExtra;
+export default FilmsExtraListComponent;

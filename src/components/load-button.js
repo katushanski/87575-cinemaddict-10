@@ -3,7 +3,7 @@ import AbstractComponent from './abstract-component.js';
 const createShowMoreButtonTemplate = () =>
   `<button class="films-list__show-more">Show more</button>`;
 
-class ShowMoreButton extends AbstractComponent {
+class ShowMoreButtonComponent extends AbstractComponent {
   constructor() {
     super();
   }
@@ -17,4 +17,4 @@ class ShowMoreButton extends AbstractComponent {
   }
 }
 
-export default ShowMoreButton;
+export default ShowMoreButtonComponent;

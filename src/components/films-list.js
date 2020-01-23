@@ -8,7 +8,7 @@ const createFilmsListTemplate = () =>
     </section>
   </section>`;
 
-class FilmsList extends AbstractComponent {
+class FilmsListComponent extends AbstractComponent {
   constructor() {
     super();
   }
@@ -22,4 +22,4 @@ class FilmsList extends AbstractComponent {
   }
 }
 
-export default FilmsList;
+export default FilmsListComponent;

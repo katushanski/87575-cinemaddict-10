@@ -24,7 +24,7 @@ const createCardElementTemplate = (card) => {
   );
 };
 
-class CardElement extends AbstractComponent {
+class CardComponent extends AbstractComponent {
   constructor(card) {
     super(card);
     this._card = card;
@@ -33,6 +33,24 @@ class CardElement extends AbstractComponent {
   getTemplate() {
     return createCardElementTemplate(this._card);
   }
+
+  onWatchlistButtonClick(handler) {
+    this.getElement()
+      .querySelector(`.film-card__controls-item--add-to-watchlist`)
+      .addEventListener(`click`, handler);
+  }
+
+  onWatchedButtonClick(handler) {
+    this.getElement()
+      .querySelector(`.film-card__controls-item--mark-as-watched`)
+      .addEventListener(`click`, handler);
+  }
+
+  onFavoritesButtonClick(handler) {
+    this.getElement()
+      .querySelector(`.film-card__controls-item--favorite`)
+      .addEventListener(`click`, handler);
+  }
 }
 
-export default CardElement;
+export default CardComponent;

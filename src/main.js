@@ -2,9 +2,9 @@ import {generateFilmCards} from './mock/mock.js';
 import {render} from './utils/render.js';
 import {getRandomNumber, getCountByProperty} from './utils/random.js';
 import FilterComponent from './components/filter.js';
-import PageController from './controllers/controller.js';
-import FooterStats from './components/footer-stats.js';
-import PersonalRating from './components/user.js';
+import PageController from './controllers/page.js';
+import FooterStatsComponent from './components/footer-stats.js';
+import PersonalRatingComponent from './components/user.js';
 
 const FILM_AMOUNT = 15;
 
@@ -58,7 +58,7 @@ render(siteMainElement, new FilterComponent(allFilters).getElement());
 
 // header and user markup
 const siteHeaderElement = document.querySelector(`.header`);
-render(siteHeaderElement, new PersonalRating(getRandomNumber(0, 25, true)).getElement());
+render(siteHeaderElement, new PersonalRatingComponent(getRandomNumber(0, 25, true)).getElement());
 
 // page controller
 const pageController = new PageController(document.querySelector(`main`));
@@ -67,7 +67,7 @@ pageController.render(films);
 // footer stats rendering
 const renderFooterStats = (amount) => {
   const siteFooterElement = document.querySelector(`footer`);
-  render(siteFooterElement, new FooterStats(amount).getElement());
+  render(siteFooterElement, new FooterStatsComponent(amount).getElement());
 };
 
 renderFooterStats(FILM_AMOUNT);
