@@ -26,6 +26,7 @@ class PageController {
 
   render(films) {
     this._films = films;
+
     // sorting films list
     const sortComponent = this._sortComponent;
     render(this._container, sortComponent.getElement());
@@ -53,14 +54,14 @@ class PageController {
       renderShowMoreButton(sortedFilms);
     });
 
-    // main list movies rendering
+    // rendering main list including container
     const filmsElement = this._filmsList.getElement();
     render(this._container, filmsElement);
 
-    // rendering each card and corresponding popup as well as adding event listeners
+    // rendering each card in the main list and corresponding popup as well as adding event listeners
     this.renderFilmCards(this._filmsList.getContainer(), this._films, FILM_MAIN_COUNT);
 
-    // "show more" button rendering
+    // rendering "show more" button
     const renderShowMoreButton = (allFilms) => {
       if (allFilms.length) {
         remove(this._showMoreButton);
@@ -85,6 +86,7 @@ class PageController {
     };
 
     renderShowMoreButton(this._films);
+
     this.renderFilmsExtraLists(this._filmsList.getElement(), this._films);
   }
 
@@ -104,14 +106,14 @@ class PageController {
     this.renderFilmCards(extraSection.getContainer(), sortedFilmCards, FILM_EXTRA_COUNT);
   }
 
+  // rendering extra lists
   renderFilmsExtraLists(container, filmCards) {
     const isTopRated = checkTopRated(filmCards);
-
     if (isTopRated) {
       this.renderFilmsListExtra(container, filmCards, `rating`, `Top rated`);
     }
-    const isMostCommented = checkMostCommented(filmCards);
 
+    const isMostCommented = checkMostCommented(filmCards);
     if (isMostCommented) {
       this.renderFilmsListExtra(container, filmCards, `commentsCount`, `Most commented`);
     }

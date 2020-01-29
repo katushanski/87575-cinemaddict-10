@@ -1,9 +1,64 @@
-import AbstractComponent from './abstract-component.js';
+import AbstractSmartComponent from './abstract-smart-component.js';
 import CommentComponent from './comment.js';
 import {render} from '../utils/render.js';
+import {MAX_RATING} from '../mock/mock.js';
+
+const createFilmRatingMarkup = (poster, title, userRating) => {
+  let buttonListMarkup = ``;
+  for (let index = 1; index <= MAX_RATING; index++) {
+    buttonListMarkup +=
+    `<input name="score" class="film-details__user-rating-input visually-hidden"
+      id="rating-${index}" ${(index === userRating) ? `checked=""` : ``}
+      type="radio" value="${index}"><label class="film-details__user-rating-label" for="rating-${index}">${index}</label>`;
+  }
+
+  return (
+    `<div class="form-details__middle-container">
+      <section class="film-details__user-rating-wrap">
+        <div class="film-details__user-rating-controls">
+          <button class="film-details__watched-reset" type="button">Undo</button>
+        </div>
+        <div class="film-details__user-score">
+          <div class="film-details__user-rating-poster">
+            <img class="film-details__user-rating-img" alt="film-poster" src="./images/posters/${poster}">
+          </div>
+          <section class="film-details__user-rating-inner">
+            <h3 class="film-details__user-rating-title">${title}</h3>
+            <p class="film-details__user-rating-feelings">How you feel it?</p>
+            <div class="film-details__user-rating-score">
+              ${buttonListMarkup}
+            </div>
+          </section>
+        </div>
+      </section>
+    </div>`
+  );
+};
+
+/* const createEmojiMarkup = (emoji) => {
+  let emojiMarkup = ``;
+  switch (emoji) {
+    case `emoji-smile`:
+      emojiMarkup = `smile`;
+      break;
+    case `emoji-sleeping`:
+      emojiMarkup = `sleeping`;
+      break;
+    case `emoji-gpuke`:
+      emojiMarkup = `puke`;
+      break;
+    case `emoji-angry`:
+      emojiMarkup = `angry`;
+      break;
+  }
+  return (emojiMarkup) ? (
+    `<img width="55" height="55" alt="emoji" src="images/emoji/${emojiMarkup}.png">`
+  ) : ``;
+}; */
 
 const createPopupTemplate = (card) => {
-  const {poster, title, rating, director, writers, country, actors, year, duration, genre, description, commentsCount, isInWatchlist, isWatched, isFavorite} = card;
+  const {poster, title, rating, userRating, director, writers, country, actors, year, duration, genre, description, commentsCount, isInWatchlist, isWatched, isFavorite} = card;
+  const userRatingBlock = (isWatched) ? createFilmRatingMarkup(poster, title, userRating) : ``;
 
   return (
     `<section class="film-details">
@@ -81,6 +136,8 @@ const createPopupTemplate = (card) => {
       </section>
     </div>
 
+    ${userRatingBlock}
+
     <div class="form-details__bottom-container">
       <section class="film-details__comments-wrap">
         <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCount}</span></h3>
@@ -121,10 +178,20 @@ const createPopupTemplate = (card) => {
   );
 };
 
-class PopupComponent extends AbstractComponent {
+class PopupComponent extends AbstractSmartComponent {
   constructor(film) {
     super(film);
     this._film = film;
+
+    // handlers
+    this._closeButtonClickHandler = null;
+    this._watchlistButtonClickHandler = null;
+    this._watchedButtonClickHandler = null;
+    this._favoritesButtonClickHandler = null;
+
+    this._emoji = null;
+
+    // this._subscribeOnEvents();
   }
 
   getTemplate() {
@@ -142,28 +209,57 @@ class PopupComponent extends AbstractComponent {
     }
   }
 
-  setCloseButtonClickHandler(handler) {
+  onCloseButtonClickHandler(handler) {
     this.getElement().querySelector(`.film-details__close-btn`)
       .addEventListener(`click`, handler);
+    this._closeButtonClickHandler = handler;
   }
 
   onWatchlistButtonClick(handler) {
-    this.getElement()
-      .querySelector(`.film-details__control-label--watchlist`)
+    this.getElement().querySelector(`.film-details__control-label--watchlist`)
       .addEventListener(`click`, handler);
   }
 
   onWatchedButtonClick(handler) {
-    this.getElement()
-      .querySelector(`.film-details__control-label--watched`)
+    this.getElement().querySelector(`.film-details__control-label--watched`)
       .addEventListener(`click`, handler);
   }
 
   onFavoritesButtonClick(handler) {
-    this.getElement()
-      .querySelector(`.film-details__control-label--favorite`)
+    this.getElement().querySelector(`.film-details__control-label--favorite`)
       .addEventListener(`click`, handler);
   }
+
+  /* recoveryListeners() {
+    this._subscribeOnEvents();
+  }
+
+  _subscribeOnEvents() {
+    const element = this.getElement();
+
+    element.querySelector(`.card__date-deadline-toggle`)
+      .addEventListener(`click`, () => {
+        this._isDateShowing = !this._isDateShowing;
+
+        this.rerender();
+      });
+
+    element.querySelector(`.card__repeat-toggle`)
+      .addEventListener(`click`, () => {
+        this._isRepeatingTask = !this._isRepeatingTask;
+
+        this.rerender();
+      });
+
+    const repeatDays = element.querySelector(`.card__repeat-days`);
+    if (repeatDays) {
+      repeatDays.addEventListener(`change`, (evt) => {
+        this._activeRepeatingDays[evt.target.value] = evt.target.checked;
+
+        this.rerender();
+      });
+    }
+  } */
 }
 
 export default PopupComponent;

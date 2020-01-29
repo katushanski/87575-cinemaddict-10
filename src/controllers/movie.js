@@ -1,11 +1,11 @@
 import {isEscEvent} from '../utils/check.js';
-import {render, remove} from '../utils/render.js';
+import {render, remove, replace} from '../utils/render.js';
 import CardComponent from '../components/film-card.js';
 import PopupComponent from '../components/popup.js';
-
-/* const Mode = {
-  DEFAULT: `default`,
-  POPUP: `details`,
+/*
+const Mode = {
+DEFAULT: `default`,
+POPUP: `details`,
 }; */
 
 export default class MovieController {
@@ -23,9 +23,9 @@ export default class MovieController {
   }
 
   render(film) {
-    // rendering each card and corresponding popup as well as adding event listeners
-    // const oldFilmCardComponent = this._filmCardComponent;
-    // const oldPopupComponent = this._popupComponent;
+    // rendering one card and corresponding popup as well as adding event listeners
+    const oldFilmCardComponent = this._filmCardComponent;
+    const oldPopupComponent = this._popupComponent;
     this._filmCardComponent = new CardComponent(film);
     this._popupComponent = new PopupComponent(film);
 
@@ -34,7 +34,7 @@ export default class MovieController {
     const showPopup = () => {
       this._popupComponent.renderComments(film.comments);
       render(document.body, this._popupComponent.getElement());
-      this._popupComponent.setCloseButtonClickHandler(closePopup);
+      this._popupComponent.onCloseButtonClickHandler(closePopup);
       document.addEventListener(`keydown`, onPopupEscPress);
     };
 
@@ -60,41 +60,54 @@ export default class MovieController {
     });
 
     // adding event listeners to card buttons
-    this._filmCardComponent.onWatchlistButtonClick(() => {
+    this._filmCardComponent.onWatchlistButtonClick((evt) => {
+      evt.preventDefault();
       this._onDataChange(this, film, Object.assign({}, film, {
         isInWatchlist: !film.isInWatchlist,
       }));
     });
 
-    this._filmCardComponent.onWatchedButtonClick(() => {
+    this._filmCardComponent.onWatchedButtonClick((evt) => {
+      evt.preventDefault();
       this._onDataChange(this, film, Object.assign({}, film, {
         isWatched: !film.isWatched,
       }));
     });
 
-    this._filmCardComponent.onFavoritesButtonClick(() => {
+    this._filmCardComponent.onFavoritesButtonClick((evt) => {
+      evt.preventDefault();
       this._onDataChange(this, film, Object.assign({}, film, {
         isFavorite: !film.isFavorite,
       }));
     });
 
     // adding event listeners to popup buttons
-    this._popupComponent.onWatchlistButtonClick(() => {
+    this._popupComponent.onWatchlistButtonClick((evt) => {
+      evt.preventDefault();
       this._onDataChange(this, film, Object.assign({}, film, {
         isInWatchlist: !film.isInWatchlist,
       }));
     });
 
-    this._popupComponent.onWatchedButtonClick(() => {
+    this._popupComponent.onWatchedButtonClick((evt) => {
+      evt.preventDefault();
       this._onDataChange(this, film, Object.assign({}, film, {
         isWatched: !film.isWatched,
       }));
     });
 
-    this._popupComponent.onFavoritesButtonClick(() => {
+    this._popupComponent.onFavoritesButtonClick((evt) => {
+      evt.preventDefault();
       this._onDataChange(this, film, Object.assign({}, film, {
         isFavorite: !film.isFavorite,
       }));
     });
+
+    if (oldFilmCardComponent && oldPopupComponent) {
+      replace(this._filmCardComponent, oldFilmCardComponent);
+      replace(this._popupComponent, oldPopupComponent);
+    } else {
+      render(this._container, this._filmCardComponent.getElement());
+    }
   }
 }
