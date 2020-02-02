@@ -229,37 +229,6 @@ class PopupComponent extends AbstractSmartComponent {
     this.getElement().querySelector(`.film-details__control-label--favorite`)
       .addEventListener(`click`, handler);
   }
-
-  /* recoveryListeners() {
-    this._subscribeOnEvents();
-  }
-
-  _subscribeOnEvents() {
-    const element = this.getElement();
-
-    element.querySelector(`.card__date-deadline-toggle`)
-      .addEventListener(`click`, () => {
-        this._isDateShowing = !this._isDateShowing;
-
-        this.rerender();
-      });
-
-    element.querySelector(`.card__repeat-toggle`)
-      .addEventListener(`click`, () => {
-        this._isRepeatingTask = !this._isRepeatingTask;
-
-        this.rerender();
-      });
-
-    const repeatDays = element.querySelector(`.card__repeat-days`);
-    if (repeatDays) {
-      repeatDays.addEventListener(`change`, (evt) => {
-        this._activeRepeatingDays[evt.target.value] = evt.target.checked;
-
-        this.rerender();
-      });
-    }
-  } */
 }
 
 export default PopupComponent;

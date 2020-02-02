@@ -1,5 +1,5 @@
 import {isEscEvent} from '../utils/check.js';
-import {render, remove, replace} from '../utils/render.js';
+import {render, remove} from '../utils/render.js';
 import CardComponent from '../components/film-card.js';
 import PopupComponent from '../components/popup.js';
 /*
@@ -19,34 +19,16 @@ export default class MovieController {
     this._filmCardComponent = null;
     this._popupComponent = null;
 
-    // this._onKeyDown = this._onKeyDown.bind(this);
+    this.onPopupEscPress = this.onPopupEscPress.bind(this);
   }
 
   render(film) {
     // rendering one card and corresponding popup as well as adding event listeners
-    const oldFilmCardComponent = this._filmCardComponent;
-    const oldPopupComponent = this._popupComponent;
+
     this._filmCardComponent = new CardComponent(film);
     this._popupComponent = new PopupComponent(film);
 
     render(this._container, this._filmCardComponent.getElement());
-
-    const showPopup = () => {
-      this._popupComponent.renderComments(film.comments);
-      render(document.body, this._popupComponent.getElement());
-      this._popupComponent.onCloseButtonClickHandler(closePopup);
-      document.addEventListener(`keydown`, onPopupEscPress);
-    };
-
-    const closePopup = () => {
-      remove(this._popupComponent);
-    };
-
-    const onPopupEscPress = (evt) => {
-      if (isEscEvent(evt)) {
-        closePopup();
-      }
-    };
 
     // adding event listeners to card elements
     const cardTitle = this._filmCardComponent.getElement().querySelector(`.film-card__title`);
@@ -56,7 +38,7 @@ export default class MovieController {
     const interactiveCardElements = [cardTitle, cardPoster, cardComments];
 
     interactiveCardElements.forEach((element) => {
-      element.addEventListener(`click`, showPopup);
+      element.addEventListener(`click`, this.showPopup(film));
     });
 
     // adding event listeners to card buttons
@@ -102,12 +84,39 @@ export default class MovieController {
         isFavorite: !film.isFavorite,
       }));
     });
+  }
 
-    if (oldFilmCardComponent && oldPopupComponent) {
-      replace(this._filmCardComponent, oldFilmCardComponent);
-      replace(this._popupComponent, oldPopupComponent);
-    } else {
-      render(this._container, this._filmCardComponent.getElement());
+  rerender(film) {
+    const oldFilmCardElement = this._filmCardComponent.getElement();
+    const oldPopupElement = this._popupComponent.getElement();
+
+    const cardParent = oldFilmCardElement.parentElement;
+    const popupParent = oldPopupElement.parentElement;
+
+    /* oldFilmCardElement.removeElement();
+    oldPopupElement.removeElement(); */
+
+    const newFilmCardElement = new CardComponent(film).getElement();
+    const newPopupElement = new PopupComponent(film).getElement();
+
+    cardParent.replaceChild(newFilmCardElement, oldFilmCardElement);
+    popupParent.replaceChild(newPopupElement, oldPopupElement);
+  }
+
+  showPopup(film) {
+    this._popupComponent.renderComments(film.comments);
+    render(document.body, this._popupComponent.getElement());
+    this._popupComponent.onCloseButtonClickHandler(this.closePopup());
+    document.addEventListener(`keydown`, this.onPopupEscPress);
+  }
+
+  closePopup() {
+    remove(this._popupComponent);
+  }
+
+  onPopupEscPress(evt) {
+    if (isEscEvent(evt)) {
+      this.closePopup();
     }
   }
 }
