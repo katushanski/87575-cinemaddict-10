@@ -1,4 +1,4 @@
-import AbstractComponent from './abstract-component.js';
+import AbstractSmartComponent from './abstract-smart-component.js';
 
 const createCardElementTemplate = (card) => {
   const {poster, title, rating, year, duration, genre, description, commentsCount, isInWatchlist, isWatched, isFavorite} = card;
@@ -24,32 +24,85 @@ const createCardElementTemplate = (card) => {
   );
 };
 
-class CardComponent extends AbstractComponent {
+class CardComponent extends AbstractSmartComponent {
   constructor(card) {
     super(card);
     this._card = card;
+
+    // properties
+    this._isInWatchlist = card.isInWatchlist;
+    this._isWatched = card.isWatched;
+    this._isFavorite = card.isFavorite;
+
+    // handlers
+    this._closeButtonClickHandler = null;
+    this._watchlistButtonClickHandler = null;
+    this._watchedButtonClickHandler = null;
+    this._favoritesButtonClickHandler = null;
   }
 
   getTemplate() {
     return createCardElementTemplate(this._card);
   }
 
-  onWatchlistButtonClick(handler) {
+  onWatchlistButtonClickHandler(handler) {
     this.getElement()
       .querySelector(`.film-card__controls-item--add-to-watchlist`)
       .addEventListener(`click`, handler);
+    this.rerender();
   }
 
-  onWatchedButtonClick(handler) {
+  onWatchedButtonClickHandler(handler) {
     this.getElement()
       .querySelector(`.film-card__controls-item--mark-as-watched`)
       .addEventListener(`click`, handler);
+    this.rerender();
   }
 
-  onFavoritesButtonClick(handler) {
+  onFavoritesButtonClickHandler(handler) {
     this.getElement()
       .querySelector(`.film-card__controls-item--favorite`)
       .addEventListener(`click`, handler);
+    this.rerender();
+  }
+
+  onInteractiveCardElementsClickHandler(handler) {
+    // adding event listeners to card elements
+    const cardTitle = this.getElement().querySelector(`.film-card__title`);
+    const cardPoster = this.getElement().querySelector(`.film-card__poster`);
+    const cardComments = this.getElement().querySelector(`.film-card__comments`);
+
+    const interactiveCardElements = [cardTitle, cardPoster, cardComments];
+
+    interactiveCardElements.forEach((element) => element.addEventListener(`click`, handler));
+  }
+
+  // setHandlers() {
+  //   this.onWatchlistButtonClickHandler((evt) => {
+  //     evt.preventDefault();
+  //     this._isInWatchlist = !film.isInWatchlist;
+  //     this.rerender();
+  //   });
+
+  //   this.onWatchedButtonClickHandler((evt) => {
+  //     evt.preventDefault();
+  //     this._isWatched = !film.isWatched;
+  //     this.rerender();
+  //   });
+
+  //   this.onFavoritesButtonClickHandler((evt) => {
+  //     evt.preventDefault();
+  //     this._isFavorite = !film.isFavorite;
+  //     this.rerender();
+  //   });
+  //
+  //   this.onInteractiveCardElementsClickHandler((evt) => {
+  //     ??????????????? Как мне перенести сюда setHandlers из movie.js, ведь нужно использовать showPopup и onDataChange
+  //   });
+  // }
+
+  rerender() {
+    super.rerender();
   }
 }
 

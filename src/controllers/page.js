@@ -119,7 +119,7 @@ class PageController {
     }
   }
 
-  _onDataChange(movieController, oldData, newData) { // почему вообще стоит передавать moviecontroller в параметры? почему нельзя просто дать на него ссылку в теле функции?
+  _onDataChange(movieController, oldData, newData) {
     const index = this._films.findIndex((it) => it === oldData);
 
     if (index === -1) {
@@ -128,7 +128,7 @@ class PageController {
 
     this._films = [].concat(this._films.slice(0, index), newData, this._films.slice(index + 1));
 
-    movieController.rerender(this._films[index]);
+    movieController.render(this._films[index]);
   }
 }
 

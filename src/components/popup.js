@@ -183,6 +183,11 @@ class PopupComponent extends AbstractSmartComponent {
     super(film);
     this._film = film;
 
+    // properties
+    this._isInWatchlist = film.isInWatchlist;
+    this._isWatched = film.isWatched;
+    this._isFavorite = film.isFavorite;
+
     // handlers
     this._closeButtonClickHandler = null;
     this._watchlistButtonClickHandler = null;
@@ -215,19 +220,41 @@ class PopupComponent extends AbstractSmartComponent {
     this._closeButtonClickHandler = handler;
   }
 
-  onWatchlistButtonClick(handler) {
+  onWatchlistButtonClickHandler(handler) {
     this.getElement().querySelector(`.film-details__control-label--watchlist`)
       .addEventListener(`click`, handler);
   }
 
-  onWatchedButtonClick(handler) {
+  onWatchedButtonClickHandler(handler) {
     this.getElement().querySelector(`.film-details__control-label--watched`)
       .addEventListener(`click`, handler);
   }
 
-  onFavoritesButtonClick(handler) {
+  onFavoritesButtonClickHandler(handler) {
     this.getElement().querySelector(`.film-details__control-label--favorite`)
       .addEventListener(`click`, handler);
+  }
+
+  setHandlers(film) {
+    this.onWatchlistButtonClickHandler(() => {
+      this._isInWatchlist = !film.isInWatchlist;
+      this.rerender();
+    });
+
+    this.onWatchedButtonClickHandler(() => {
+      this._isWatched = !film.isWatched;
+      this.rerender();
+    });
+
+    this.onFavoritesButtonClickHandler(() => {
+      this._isFavorite = !film.isFavorite;
+      this.rerender();
+    });
+  }
+
+  rerender() {
+    super.rerender();
+    this.setHandlers();
   }
 }
 
