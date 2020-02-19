@@ -13,7 +13,7 @@ export default class MovieController {
     this._container = container;
     this._onDataChange = onDataChange;
 
-    this.data = {};
+    this._film = {};
 
     this._filmCardComponent = null;
     this._popupComponent = null;
@@ -24,7 +24,7 @@ export default class MovieController {
   }
 
   render(film) {
-    this.data = film;
+    this._film = film;
 
     // rendering one card and corresponding popup as well as adding event listeners
     this._filmCardComponent = new CardComponent(film);
@@ -35,47 +35,29 @@ export default class MovieController {
   }
 
   rerender(film) {
-    this.data = film;
-    this._filmCardComponent.rerender(this._filmCardComponent, film);
+    this._film = film;
+
+    if (this._filmCardComponent) {
+      this._filmCardComponent.rerender(film);
+    }
+
     if (this._popupComponent) {
-      this._popupComponent.rerender(this._popupComponent, film);
-      this._popupComponent.onCloseButtonClickHandler(this.closePopup);
+      this._popupComponent.rerender(film);
     }
 
     this.setFilmCardHandlers(film);
   }
 
   setFilmCardHandlers(film) {
+    this._film = film;
     // adding event listeners to card interactive elements and popup "X" button
     this._filmCardComponent.onInteractiveCardElementsClickHandler(this.showPopup);
     this._popupComponent.onCloseButtonClickHandler(this.closePopup);
-
-    // adding event listeners to card buttons
-    this._filmCardComponent.onWatchlistButtonClickHandler((evt) => {
-      evt.preventDefault();
-      this._onDataChange(this, film, Object.assign({}, film, {
-        isInWatchlist: !film.isInWatchlist,
-      }));
-    });
-
-    this._filmCardComponent.onWatchedButtonClickHandler((evt) => {
-      evt.preventDefault();
-      this._onDataChange(this, film, Object.assign({}, film, {
-        isWatched: !film.isWatched,
-      }));
-    });
-
-    this._filmCardComponent.onFavoritesButtonClickHandler((evt) => {
-      evt.preventDefault();
-      this._onDataChange(this, film, Object.assign({}, film, {
-        isFavorite: !film.isFavorite,
-      }));
-    });
   }
 
-  showPopup(film) {
-    this._popupComponent = new PopupComponent(this.data);
-    this._popupComponent.renderComments(film.comments);
+  showPopup() {
+    this._popupComponent = new PopupComponent(this._film);
+    this._popupComponent.renderComments(this._film.comments);
     render(document.body, this._popupComponent.getElement());
     this._popupComponent.onCloseButtonClickHandler(this.closePopup);
     document.addEventListener(`keydown`, this.onPopupEscPress);

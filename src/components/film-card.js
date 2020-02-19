@@ -49,21 +49,18 @@ class CardComponent extends AbstractSmartComponent {
     this.getElement()
       .querySelector(`.film-card__controls-item--add-to-watchlist`)
       .addEventListener(`click`, handler);
-    this.rerender();
   }
 
   onWatchedButtonClickHandler(handler) {
     this.getElement()
       .querySelector(`.film-card__controls-item--mark-as-watched`)
       .addEventListener(`click`, handler);
-    this.rerender();
   }
 
   onFavoritesButtonClickHandler(handler) {
     this.getElement()
       .querySelector(`.film-card__controls-item--favorite`)
       .addEventListener(`click`, handler);
-    this.rerender();
   }
 
   onInteractiveCardElementsClickHandler(handler) {
@@ -77,32 +74,24 @@ class CardComponent extends AbstractSmartComponent {
     interactiveCardElements.forEach((element) => element.addEventListener(`click`, handler));
   }
 
-  // setHandlers() {
-  //   this.onWatchlistButtonClickHandler((evt) => {
-  //     evt.preventDefault();
-  //     this._isInWatchlist = !film.isInWatchlist;
-  //     this.rerender();
-  //   });
+  setHandlers(film) {
+    this.onWatchlistButtonClickHandler(() => {
+      this._isInWatchlist = !film.isInWatchlist;
+    });
 
-  //   this.onWatchedButtonClickHandler((evt) => {
-  //     evt.preventDefault();
-  //     this._isWatched = !film.isWatched;
-  //     this.rerender();
-  //   });
+    this.onWatchedButtonClickHandler(() => {
+      this._isWatched = !film.isWatched;
+    });
 
-  //   this.onFavoritesButtonClickHandler((evt) => {
-  //     evt.preventDefault();
-  //     this._isFavorite = !film.isFavorite;
-  //     this.rerender();
-  //   });
-  //
-  //   this.onInteractiveCardElementsClickHandler((evt) => {
-  //     ??????????????? Как мне перенести сюда setHandlers из movie.js, ведь нужно использовать showPopup и onDataChange
-  //   });
-  // }
+    this.onFavoritesButtonClickHandler(() => {
+      this._isFavorite = !film.isFavorite;
+    });
+  }
 
-  rerender() {
+  rerender(film) {
+    this._film = film;
     super.rerender();
+    this.setHandlers(film);
   }
 }
 
