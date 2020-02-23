@@ -15,9 +15,11 @@ export default class MovieController {
 
     this._film = {};
 
+    // compnents
     this._filmCardComponent = null;
     this._popupComponent = null;
 
+    // methods
     this.onPopupEscPress = this.onPopupEscPress.bind(this);
     this.showPopup = this.showPopup.bind(this);
     this.closePopup = this.closePopup.bind(this);
@@ -50,9 +52,54 @@ export default class MovieController {
 
   setFilmCardHandlers(film) {
     this._film = film;
-    // adding event listeners to card interactive elements and popup "X" button
+
+    // adding event listeners to card interactive elements
     this._filmCardComponent.onInteractiveCardElementsClickHandler(this.showPopup);
+
+    this._filmCardComponent.onWatchlistButtonClickHandler((evt) => {
+      evt.preventDefault();
+      this._onDataChange(this, film, Object.assign({}, film, {
+        isInWatchlist: !film.isInWatchlist,
+      }));
+    });
+
+    this._filmCardComponent.onWatchedButtonClickHandler((evt) => {
+      evt.preventDefault();
+      this._onDataChange(this, film, Object.assign({}, film, {
+        isWatched: !film.isWatched,
+      }));
+    });
+
+    this._filmCardComponent.onFavoritesButtonClickHandler((evt) => {
+      evt.preventDefault();
+      this._onDataChange(this, film, Object.assign({}, film, {
+        isFavorite: !film.isFavorite,
+      }));
+    });
+
+    // adding event listeners to popup buttons
     this._popupComponent.onCloseButtonClickHandler(this.closePopup);
+
+    this._popupComponent.onWatchlistButtonClickHandler((evt) => {
+      evt.preventDefault();
+      this._onDataChange(this, film, Object.assign({}, film, {
+        isInWatchlist: !film.isInWatchlist,
+      }));
+    });
+
+    this._popupComponent.onWatchedButtonClickHandler((evt) => {
+      evt.preventDefault();
+      this._onDataChange(this, film, Object.assign({}, film, {
+        isWatched: !film.isWatched,
+      }));
+    });
+
+    this._popupComponent.onFavoritesButtonClickHandler((evt) => {
+      evt.preventDefault();
+      this._onDataChange(this, film, Object.assign({}, film, {
+        isFavorite: !film.isFavorite,
+      }));
+    });
   }
 
   showPopup() {

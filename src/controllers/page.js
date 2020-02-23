@@ -128,7 +128,7 @@ class PageController {
 
     this._films = [].concat(this._films.slice(0, index), newData, this._films.slice(index + 1));
 
-    movieController.render(this._films[index]);
+    movieController.rerender(this._films[index]);
   }
 }
 

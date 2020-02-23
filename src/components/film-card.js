@@ -28,17 +28,6 @@ class CardComponent extends AbstractSmartComponent {
   constructor(card) {
     super(card);
     this._card = card;
-
-    // properties
-    this._isInWatchlist = card.isInWatchlist;
-    this._isWatched = card.isWatched;
-    this._isFavorite = card.isFavorite;
-
-    // handlers
-    this._closeButtonClickHandler = null;
-    this._watchlistButtonClickHandler = null;
-    this._watchedButtonClickHandler = null;
-    this._favoritesButtonClickHandler = null;
   }
 
   getTemplate() {
@@ -74,24 +63,9 @@ class CardComponent extends AbstractSmartComponent {
     interactiveCardElements.forEach((element) => element.addEventListener(`click`, handler));
   }
 
-  setHandlers(film) {
-    this.onWatchlistButtonClickHandler(() => {
-      this._isInWatchlist = !film.isInWatchlist;
-    });
-
-    this.onWatchedButtonClickHandler(() => {
-      this._isWatched = !film.isWatched;
-    });
-
-    this.onFavoritesButtonClickHandler(() => {
-      this._isFavorite = !film.isFavorite;
-    });
-  }
-
   rerender(film) {
     this._film = film;
     super.rerender();
-    this.setHandlers(film);
   }
 }
 

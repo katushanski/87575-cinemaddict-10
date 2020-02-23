@@ -183,11 +183,6 @@ class PopupComponent extends AbstractSmartComponent {
     super(film);
     this._film = film;
 
-    // properties
-    this._isInWatchlist = film.isInWatchlist;
-    this._isWatched = film.isWatched;
-    this._isFavorite = film.isFavorite;
-
     this._emoji = null;
 
     // this._subscribeOnEvents();
@@ -228,24 +223,9 @@ class PopupComponent extends AbstractSmartComponent {
       .addEventListener(`click`, handler);
   }
 
-  setHandlers(film) {
-    this.onWatchlistButtonClickHandler(() => {
-      this._isInWatchlist = !film.isInWatchlist;
-    });
-
-    this.onWatchedButtonClickHandler(() => {
-      this._isWatched = !film.isWatched;
-    });
-
-    this.onFavoritesButtonClickHandler(() => {
-      this._isFavorite = !film.isFavorite;
-    });
-  }
-
   rerender(film) {
     this._film = film;
     super.rerender();
-    this.setHandlers(film);
   }
 }
 
